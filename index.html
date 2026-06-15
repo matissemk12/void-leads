@@ -8,14 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0c0c0c;--surface:rgba(255,255,255,.06);--border:rgba(255,255,255,.1);
-      --ink:#f2f2f2;--muted:rgba(255,255,255,.65);--dim:rgba(255,255,255,.45);
+      --bg:#080810;--surface:rgba(255,255,255,.05);--border:rgba(255,255,255,.08);
+      --ink:#dde0f0;--muted:rgba(221,224,240,.6);--dim:rgba(221,224,240,.38);
       --accent:#fff;--ease:cubic-bezier(.4,0,.2,1);
       --new:#3b82f6;--contacted:#f59e0b;--quoted:#8b5cf6;--won:#22c55e;--lost:#ef4444;
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-    html,body{background:#000;min-height:100%}
+    html,body{background:#080810;min-height:100%}
     body{color:var(--ink);font-family:'Inter',system-ui,sans-serif;
       font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
     #dotted-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
@@ -543,7 +543,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const focal = (canvas.height / 2) / Math.tan(FOV / 2);
     const hw = canvas.width / 2, hh = canvas.height / 2;
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fillStyle = 'rgba(180,185,220,0.22)';
 
     for (let ix = 0; ix < AX; ix++) {
       for (let iy = 0; iy < AY; iy++) {
