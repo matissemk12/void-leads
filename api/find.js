@@ -6,26 +6,29 @@ module.exports = async function handler(req, res) {
   const { q } = req.query;
   if (!q) return res.status(400).json({ error: 'q required' });
 
+  const key = process.env.BRAVE_SEARCH_KEY;
+  if (!key) return res.status(500).json({ error: 'BRAVE_SEARCH_KEY not configured' });
+
   try {
-    const r = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}`, {
+    const r = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(q)}&count=20`, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip',
+        'X-Subscription-Token': key,
       },
       signal: AbortSignal.timeout(8000),
     });
 
     if (!r.ok) throw new Error(`Search returned ${r.status}`);
-    const html = await r.text();
+    const data = await r.json();
 
     const urls = [];
     const seen = new Set();
 
-    for (const [, uddg] of html.matchAll(/uddg=([^&"'\s]+)/g)) {
+    for (const result of (data.web?.results || [])) {
       try {
-        const url = decodeURIComponent(uddg);
-        if (!url.startsWith('http')) continue;
+        const url = result.url;
+        if (!url) continue;
         const host = new URL(url).hostname.replace(/^www\./, '');
         if (SKIP.test(host)) continue;
         if (seen.has(host)) continue;
