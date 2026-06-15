@@ -103,6 +103,29 @@ function extractEmails(html) {
 }
 
 
+function extractReviewCount(html) {
+  const ldItems = [];
+  for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try { ldItems.push(...flattenJsonLd(JSON.parse(raw))); } catch {}
+  }
+  for (const d of ldItems) {
+    if (d.aggregateRating) {
+      const c = parseInt(d.aggregateRating.reviewCount || d.aggregateRating.ratingCount || 0, 10);
+      if (c > 0) return c;
+    }
+  }
+  const text = html.replace(/<[^>]+>/g, ' ');
+  const m = text.match(/\b(\d+)\s+(?:google\s+)?reviews?\b/i);
+  if (m) return parseInt(m[1], 10);
+  return null;
+}
+
+function isChainSite(html, hostname) {
+  if (/1800gotjunk|junkking|collegehunks|loadup|servpro|molly.?maid|merry.?maids|jan-?pro|coverall|servicemaster|chem-?dry/i.test(hostname)) return true;
+  const text = html.replace(/<[^>]+>/g, ' ').toLowerCase();
+  return /franchise\s+opportunit|find\s+a\s+location\s+near|locations?\s+nationwide|serving\s+\d{2,}\s+(?:cities|states|locations)|our\s+franchis/.test(text);
+}
+
 function extractAddress(html) {
   for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
     try {
@@ -142,11 +165,13 @@ module.exports = async function handler(req, res) {
     const html = await r.text();
 
     res.json({
-      name:    extractName(html, target.hostname),
-      phones:  extractPhones(html),
-      emails:  extractEmails(html),
-      address: extractAddress(html),
-      url:     target.toString(),
+      name:        extractName(html, target.hostname),
+      phones:      extractPhones(html),
+      emails:      extractEmails(html),
+      address:     extractAddress(html),
+      reviewCount: extractReviewCount(html),
+      isChain:     isChainSite(html, target.hostname),
+      url:         target.toString(),
     });
   } catch (err) {
     res.status(500).json({ error: err.message || 'Could not reach site' });

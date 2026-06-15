@@ -255,6 +255,7 @@
           <th onclick="sortBy('email')">Email</th>
           <th class="td-url" onclick="sortBy('url')">Website</th>
           <th onclick="sortBy('status')">Status</th>
+          <th onclick="sortBy('reviews')" style="text-align:center">Reviews</th>
           <th class="td-date" onclick="sortBy('date')">Added</th>
           <th></th>
         </tr>
@@ -432,7 +433,7 @@ phones:  extracted.phones || [],
       th.classList.remove('sort-asc','sort-desc');
     });
     const ths = document.querySelectorAll('thead th');
-    const cols = ['name','phone','email','url','status','date'];
+    const cols = ['name','phone','email','url','status','reviews','date'];
     const idx = cols.indexOf(col);
     if(idx >= 0 && ths[idx]) ths[idx].classList.add(_sortDir===1?'sort-asc':'sort-desc');
     renderTable();
@@ -489,6 +490,7 @@ phones:  extracted.phones || [],
               <select class="status-sel" onchange="updateStatus('${l.id}',this.value)">${opts}</select>
             </span>
           </td>
+          <td style="text-align:center;font-size:11px;color:var(--muted)">${l.reviewCount != null ? l.reviewCount : '—'}</td>
           <td class="td-date">${dateStr}</td>
           <td>
             <div class="td-actions">
@@ -563,8 +565,10 @@ phones:  extracted.phones || [],
           if (existingHosts.has(host)) continue;
           const sr = await fetch(`/api/scrape?url=${encodeURIComponent(urls[i])}`);
           const d = await sr.json();
-          if (!d.error && (d.phones?.length || d.emails?.length)) {
-            leads.unshift({ id: Date.now().toString() + i, name: d.name || '', phones: d.phones || [], emails: d.emails || [], address: d.address || '', url: d.url || urls[i], status: 'New', notes: '', date: new Date().toISOString() });
+          const hasContact = d.phones?.length && d.emails?.length;
+          const reviewsOk = d.reviewCount === null || d.reviewCount === undefined || d.reviewCount >= 5;
+          if (!d.error && hasContact && !d.isChain && reviewsOk) {
+            leads.unshift({ id: Date.now().toString() + i, name: d.name || '', phones: d.phones || [], emails: d.emails || [], address: d.address || '', reviewCount: d.reviewCount ?? null, url: d.url || urls[i], status: 'New', notes: '', date: new Date().toISOString() });
             existingHosts.add(host);
             added++;
             save();
