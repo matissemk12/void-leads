@@ -8,8 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0c0c0c;--surface:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);
-      --ink:#e8e8e8;--muted:rgba(255,255,255,.35);--dim:rgba(255,255,255,.15);
+      --bg:#0c0c0c;--surface:rgba(255,255,255,.06);--border:rgba(255,255,255,.1);
+      --ink:#f2f2f2;--muted:rgba(255,255,255,.65);--dim:rgba(255,255,255,.45);
       --accent:#fff;--ease:cubic-bezier(.4,0,.2,1);
       --new:#3b82f6;--contacted:#f59e0b;--quoted:#8b5cf6;--won:#22c55e;--lost:#ef4444;
     }
@@ -40,41 +40,43 @@
 
     /* ── scraper ── */
     #scraper{background:rgba(0,0,0,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-      border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:24px;margin-bottom:24px}
-    .scraper-label{font-size:10px;letter-spacing:.14em;color:var(--muted);
-      text-transform:uppercase;margin-bottom:12px}
+      border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:28px;margin-bottom:24px}
+    .scraper-label{font-size:15px;font-weight:500;letter-spacing:.01em;color:#fff;
+      margin-bottom:6px}
+    .scraper-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
     .url-row{display:flex;gap:10px}
-    .url-input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);
-      border-radius:3px;padding:11px 14px;font-size:13px;color:var(--ink);outline:none;
-      transition:border-color 200ms}
-    .url-input:focus{border-color:rgba(255,255,255,.25)}
-    .url-input::placeholder{color:var(--dim)}
-    .btn-extract{padding:11px 22px;background:#fff;color:#0c0c0c;border:none;
-      border-radius:3px;font-size:12px;font-weight:500;letter-spacing:.06em;
-      transition:opacity 180ms;white-space:nowrap;display:flex;align-items:center;gap:8px}
-    .btn-extract:hover{opacity:.88}
-    .btn-extract:disabled{opacity:.35;cursor:not-allowed}
-    .spinner{width:12px;height:12px;border:1.5px solid rgba(0,0,0,.2);
-      border-top-color:#0c0c0c;border-radius:50%;animation:spin .6s linear infinite;display:none}
+    .url-input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+      border-radius:6px;padding:13px 16px;font-size:14px;color:#fff;outline:none;
+      transition:border-color 200ms,background 200ms}
+    .url-input:focus{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.09)}
+    .url-input::placeholder{color:rgba(255,255,255,.3)}
+    .btn-extract{padding:13px 26px;background:#fff;color:#000;border:none;
+      border-radius:6px;font-size:13px;font-weight:600;letter-spacing:.04em;
+      transition:opacity 180ms,transform 100ms;white-space:nowrap;display:flex;align-items:center;gap:8px}
+    .btn-extract:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-extract:active{transform:translateY(0)}
+    .btn-extract:disabled{opacity:.3;cursor:not-allowed;transform:none}
+    .spinner{width:13px;height:13px;border:2px solid rgba(0,0,0,.15);
+      border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite;display:none}
     @keyframes spin{to{transform:rotate(360deg)}}
 
     /* ── results ── */
-    #results{margin-top:20px;display:none}
-    .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
-    .rf{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:14px 16px}
-    .rf-label{font-size:9px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
-    .rf-value{font-size:13px;color:var(--ink);word-break:break-all;min-height:18px}
-    .rf-value.empty{color:var(--dim);font-style:italic;font-size:11px}
+    #results{margin-top:24px;display:none}
+    .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:18px}
+    .rf{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:16px}
+    .rf-label{font-size:9px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+    .rf-value{font-size:13px;color:#fff;word-break:break-all;min-height:18px;font-weight:500}
+    .rf-value.empty{color:var(--dim);font-style:italic;font-size:11px;font-weight:400}
     .copy-btn{background:none;border:none;color:var(--dim);font-size:10px;letter-spacing:.06em;
-      padding:0;margin-top:6px;transition:color 180ms;display:block}
-    .copy-btn:hover{color:var(--ink)}
-    .results-actions{display:flex;gap:10px;align-items:center}
-    .btn-save{padding:10px 22px;background:#fff;color:#0c0c0c;border:none;border-radius:3px;
-      font-size:12px;font-weight:500;letter-spacing:.06em;transition:opacity 180ms}
-    .btn-save:hover{opacity:.88}
-    .btn-clear{padding:10px 16px;background:transparent;border:1px solid var(--border);
-      border-radius:3px;color:var(--muted);font-size:12px;letter-spacing:.04em;transition:all 180ms}
-    .btn-clear:hover{border-color:rgba(255,255,255,.2);color:var(--ink)}
+      padding:0;margin-top:8px;transition:color 180ms;display:block}
+    .copy-btn:hover{color:#fff}
+    .results-actions{display:flex;gap:10px;align-items:center;padding-top:4px}
+    .btn-save{padding:11px 24px;background:#fff;color:#000;border:none;border-radius:6px;
+      font-size:12px;font-weight:600;letter-spacing:.04em;transition:opacity 180ms,transform 100ms}
+    .btn-save:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-clear{padding:11px 18px;background:transparent;border:1px solid rgba(255,255,255,.12);
+      border-radius:6px;color:var(--muted);font-size:12px;letter-spacing:.04em;transition:all 180ms}
+    .btn-clear:hover{border-color:rgba(255,255,255,.3);color:#fff}
     #err-msg{margin-top:14px;font-size:12px;color:#f87171;letter-spacing:.04em}
 
     /* ── leads section ── */
@@ -164,6 +166,7 @@
   <!-- Scraper -->
   <div id="scraper">
     <div class="scraper-label">Extract from website</div>
+    <div class="scraper-sub">Paste a URL to pull contact info automatically</div>
     <div class="url-row">
       <input type="text" class="url-input" id="url-in"
         placeholder="mikes-garage-cleaning.com"
