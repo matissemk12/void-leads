@@ -102,6 +102,19 @@ function extractEmails(html) {
   return [...found].slice(0,3);
 }
 
+// Returns true only for "First Last" or "First Middle Last" — real person names only
+function isPersonName(s) {
+  if (!s || typeof s !== 'string') return false;
+  const parts = s.trim().split(/\s+/);
+  if (parts.length < 2 || parts.length > 3) return false;
+  return parts.every(p => /^[A-Z][a-z]{1,19}$/.test(p));
+}
+
+function name(s) {
+  const v = typeof s === 'string' ? s.trim() : (s && s.name ? String(s.name).trim() : null);
+  return isPersonName(v) ? v : null;
+}
+
 function extractOwner(html) {
   // JSON-LD — flatten @graph first
   const ldItems = [];
@@ -114,8 +127,8 @@ function extractOwner(html) {
     for (const key of ['founder', 'owner']) {
       if (d[key]) {
         const v = Array.isArray(d[key]) ? d[key][0] : d[key];
-        if (typeof v === 'string' && v.length > 1) return v;
-        if (v && v.name) return String(v.name);
+        const n = name(v);
+        if (n) return n;
       }
     }
   }
@@ -124,8 +137,10 @@ function extractOwner(html) {
   for (const d of ldItems) {
     if (d['@type'] && /^person$/i.test(String(d['@type'])) && d.name) {
       const title = String(d.jobTitle || '');
-      if (!title || /owner|founder|president|ceo|director|principal|proprietor/i.test(title))
-        return Array.isArray(d.name) ? d.name[0] : String(d.name);
+      if (!title || /owner|founder|president|ceo|director|principal|proprietor/i.test(title)) {
+        const n = name(Array.isArray(d.name) ? d.name[0] : d.name);
+        if (n) return n;
+      }
     }
   }
 
@@ -134,8 +149,10 @@ function extractOwner(html) {
     for (const key of ['member', 'employee', 'personnel']) {
       if (d[key]) {
         for (const m of [].concat(d[key])) {
-          if (m && m.name && /owner|founder|president|ceo|director|principal/i.test(String(m.jobTitle || '')))
-            return String(m.name);
+          if (m && m.name && /owner|founder|president|ceo|director|principal/i.test(String(m.jobTitle || ''))) {
+            const n = name(m.name);
+            if (n) return n;
+          }
         }
       }
     }
@@ -144,25 +161,25 @@ function extractOwner(html) {
   // meta author
   const metaM = html.match(/<meta[^>]+name=["']author["'][^>]+content=["']([^"']{3,50})["']/i)
              || html.match(/<meta[^>]+content=["']([^"']{3,50})["'][^>]+name=["']author["']/i);
-  if (metaM && /[A-Z][a-z]+ [A-Z]/.test(metaM[1])) return metaM[1].trim();
+  if (metaM) { const n = name(metaM[1]); if (n) return n; }
 
   const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
-  // copyright line — "© 2024 John Smith" but skip business-word suffixes
-  const copyM = text.match(/©\s*(?:\d{4}\s*)?([A-Z][a-z]+ (?:[A-Z][a-z]+ )?[A-Z][a-z]+)(?!\s*(?:LLC|Inc\b|Corp\b|Co\.|Company|Group|Services|Solutions|Construction|Cleaning|Plumbing|Electric|Roofing|Painting|Landscaping))/);
-  if (copyM) return copyM[1].trim();
-
   // "owned by / operated by / founded by / owner: Name"
   const ownerM = text.match(/\b(?:owned by|operated by|founded by|owner[:\s–\-]+|proprietor[:\s–\-]+|founder[:\s–\-]+)([A-Z][a-z]+ (?:[A-Z][a-z]+ )?[A-Z][a-z]+)/i);
-  if (ownerM) return ownerM[1].trim();
+  if (ownerM) { const n = name(ownerM[1]); if (n) return n; }
 
   // "Meet John Smith" / "Hi, I'm John Smith" / "I'm John Smith"
   const meetM = text.match(/\b(?:meet\s+(?:our\s+)?(?:owner\s+)?|hi[,!]?\s+i'?m\s+|i'?m\s+)([A-Z][a-z]+ [A-Z][a-z]+)/i);
-  if (meetM) return meetM[1].trim();
+  if (meetM) { const n = name(meetM[1]); if (n) return n; }
 
   // footer/bio signature: "– John Smith, Owner" or "John Smith | Owner"
   const sigM = text.match(/[–\-|]\s*([A-Z][a-z]+ [A-Z][a-z]+)[,\s]+(?:owner|founder|president|ceo|operator)/i);
-  if (sigM) return sigM[1].trim();
+  if (sigM) { const n = name(sigM[1]); if (n) return n; }
+
+  // copyright line — "© 2024 John Smith"
+  const copyM = text.match(/©\s*(?:\d{4}\s*)?([A-Z][a-z]+ (?:[A-Z][a-z]+ )?[A-Z][a-z]+)/);
+  if (copyM) { const n = name(copyM[1]); if (n) return n; }
 
   return null;
 }
