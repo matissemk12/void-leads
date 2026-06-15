@@ -38,65 +38,73 @@
       background:transparent;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.06em;transition:all 180ms}
     .btn-sm:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
-    /* ── scraper ── */
-    #scraper{background:transparent;border:none;padding:0 0 28px;margin-bottom:8px}
-    .scraper-label{font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.5);
-      text-transform:uppercase;text-align:center;margin-bottom:12px}
-    .url-row{display:flex;gap:0;max-width:560px;margin:0 auto}
-    .url-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);
-      border-right:none;border-radius:7px 0 0 7px;padding:13px 18px;font-size:14px;color:#fff;outline:none;
+    /* ── split layout ── */
+    #split{display:flex;gap:20px;align-items:flex-start}
+    #scraper{width:300px;flex-shrink:0;background:rgba(0,0,0,.6);backdrop-filter:blur(24px);
+      -webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.1);
+      border-radius:10px;padding:20px;position:sticky;top:24px}
+    #leads-panel{flex:1;min-width:0}
+
+    .scraper-heading{font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.45);
+      text-transform:uppercase;margin-bottom:16px}
+    .url-col{display:flex;flex-direction:column;gap:8px}
+    .url-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);
+      border-radius:7px;padding:11px 14px;font-size:13px;color:#fff;outline:none;
       animation:pulse-glow 2.8s ease-in-out infinite;transition:background 200ms}
     .url-input:focus{background:rgba(255,255,255,.08);animation:none;
-      border-color:rgba(255,255,255,.5);box-shadow:0 0 22px rgba(255,255,255,.12)}
+      border-color:rgba(255,255,255,.5);box-shadow:0 0 20px rgba(255,255,255,.1)}
     .url-input::placeholder{color:rgba(255,255,255,.25)}
     @keyframes pulse-glow{
-      0%,100%{border-color:rgba(255,255,255,.18);box-shadow:0 0 0 rgba(255,255,255,0)}
-      50%{border-color:rgba(255,255,255,.45);box-shadow:0 0 18px rgba(255,255,255,.1),0 0 6px rgba(255,255,255,.06)}
+      0%,100%{border-color:rgba(255,255,255,.18);box-shadow:none}
+      50%{border-color:rgba(255,255,255,.45);box-shadow:0 0 16px rgba(255,255,255,.1)}
     }
-    .btn-extract{padding:13px 22px;background:rgba(255,255,255,.1);color:#fff;
-      border:1px solid rgba(255,255,255,.18);border-left:none;
-      border-radius:0 7px 7px 0;font-size:13px;font-weight:500;letter-spacing:.04em;
-      transition:background 180ms;white-space:nowrap;display:flex;align-items:center;gap:8px}
+    .btn-extract{width:100%;padding:11px;background:rgba(255,255,255,.1);color:#fff;
+      border:1px solid rgba(255,255,255,.18);border-radius:7px;font-size:13px;font-weight:500;
+      letter-spacing:.04em;transition:background 180ms;display:flex;align-items:center;justify-content:center;gap:8px}
     .btn-extract:hover{background:rgba(255,255,255,.18)}
     .btn-extract:disabled{opacity:.3;cursor:not-allowed}
     .spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);
       border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
     @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ── results ── */
-    #results{margin-top:24px;display:none}
-    .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:18px}
-    .rf{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:16px}
-    .rf-label{font-size:9px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-    .rf-value{font-size:13px;color:#fff;word-break:break-all;min-height:18px;font-weight:500}
+    /* ── results (left panel list) ── */
+    #results{margin-top:20px;display:none}
+    .rf-list{display:flex;flex-direction:column;gap:1px;border:1px solid rgba(255,255,255,.08);
+      border-radius:8px;overflow:hidden;margin-bottom:14px}
+    .rf{padding:11px 14px;background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:3px;
+      border-bottom:1px solid rgba(255,255,255,.06)}
+    .rf:last-child{border-bottom:none}
+    .rf-label{font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+    .rf-value{font-size:13px;color:#fff;word-break:break-all;font-weight:500}
     .rf-value.empty{color:var(--dim);font-style:italic;font-size:11px;font-weight:400}
-    .copy-btn{background:none;border:none;color:var(--dim);font-size:10px;letter-spacing:.06em;
-      padding:0;margin-top:8px;transition:color 180ms;display:block}
+    .copy-btn{background:none;border:none;color:rgba(255,255,255,.35);font-size:10px;letter-spacing:.06em;
+      padding:0;margin-top:2px;transition:color 180ms;display:block;text-align:left}
     .copy-btn:hover{color:#fff}
-    .results-actions{display:flex;gap:10px;align-items:center;padding-top:4px}
-    .btn-save{padding:10px 22px;background:#fff;color:#000;border:none;border-radius:6px;
+    .results-actions{display:flex;gap:8px}
+    .btn-save{flex:1;padding:10px;background:#fff;color:#000;border:none;border-radius:6px;
       font-size:12px;font-weight:600;letter-spacing:.04em;transition:opacity 180ms}
     .btn-save:hover{opacity:.88}
-    .btn-clear{padding:10px 16px;background:transparent;border:1px solid rgba(255,255,255,.12);
-      border-radius:6px;color:var(--muted);font-size:12px;letter-spacing:.04em;transition:all 180ms}
+    .btn-clear{padding:10px 14px;background:transparent;border:1px solid rgba(255,255,255,.12);
+      border-radius:6px;color:var(--muted);font-size:12px;transition:all 180ms}
     .btn-clear:hover{border-color:rgba(255,255,255,.3);color:#fff}
-    #err-msg{margin-top:14px;font-size:12px;color:#f87171;letter-spacing:.04em}
+    #err-msg{margin-top:12px;font-size:12px;color:#f87171;letter-spacing:.04em}
 
     /* ── leads section ── */
-    .leads-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-    .leads-title{font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
-    .leads-count{font-size:11px;color:var(--dim);margin-left:8px}
-    .filter-row{display:flex;gap:8px;flex-wrap:wrap}
-    .filter-btn{padding:5px 12px;border:1px solid var(--border);border-radius:100px;
+    .leads-header{display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:12px;gap:10px;flex-wrap:wrap}
+    .leads-count{font-size:11px;color:var(--dim)}
+    .filter-row{display:flex;gap:6px;flex-wrap:wrap}
+    .filter-btn{padding:5px 11px;border:1px solid var(--border);border-radius:100px;
       background:transparent;color:var(--dim);font-size:11px;letter-spacing:.04em;transition:all 180ms}
     .filter-btn:hover,.filter-btn.active{border-color:rgba(255,255,255,.3);color:var(--ink)}
-    .search-in{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;
-      padding:6px 12px;color:var(--ink);font-size:12px;width:180px;outline:none;transition:border-color 200ms}
-    .search-in:focus{border-color:rgba(255,255,255,.2)}
+    .search-in{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;
+      padding:6px 12px;color:var(--ink);font-size:12px;width:160px;outline:none;transition:border-color 200ms}
+    .search-in:focus{border-color:rgba(255,255,255,.25)}
     .search-in::placeholder{color:var(--dim)}
 
     /* ── table ── */
-    #leads-wrap{overflow-x:auto;margin-top:12px;background:rgba(0,0,0,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:6px;border:1px solid rgba(255,255,255,.08)}
+    #leads-wrap{overflow-x:auto;background:rgba(0,0,0,.6);backdrop-filter:blur(24px);
+      -webkit-backdrop-filter:blur(24px);border-radius:10px;border:1px solid rgba(255,255,255,.1)}
     table{width:100%;border-collapse:collapse}
     thead th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.1em;
       color:rgba(255,255,255,.45);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);
@@ -146,9 +154,9 @@
     #note-area:focus{border-color:rgba(255,255,255,.2)}
     .modal-actions{display:flex;gap:10px;margin-top:14px;justify-content:flex-end}
 
-    @media(max-width:600px){
-      .url-row{flex-direction:column}
-      .results-grid{grid-template-columns:1fr}
+    @media(max-width:760px){
+      #split{flex-direction:column}
+      #scraper{width:100%;position:static}
       table{font-size:11px}
       .td-url,.td-date{display:none}
     }
@@ -166,72 +174,55 @@
     </div>
   </div>
 
-  <!-- Scraper -->
-  <div id="scraper">
-    <div class="url-row">
-      <input type="text" class="url-input" id="url-in"
-        placeholder="mikes-garage-cleaning.com"
-        autocomplete="off" spellcheck="false">
-      <button class="btn-extract" id="extract-btn" onclick="doExtract()">
-        <div class="spinner" id="spinner"></div>
-        <span id="extract-label">Extract</span>
-      </button>
-    </div>
-    <div id="err-msg"></div>
+  <!-- Split layout -->
+  <div id="split">
 
-    <!-- Results -->
-    <div id="results">
-      <div class="results-grid">
-        <div class="rf">
-          <div class="rf-label">Business name</div>
-          <div class="rf-value" id="r-name"></div>
-          <button class="copy-btn" onclick="copy('r-name')">Copy</button>
+    <!-- Left: scraper -->
+    <div id="scraper">
+      <div class="scraper-heading">Extract</div>
+      <div class="url-col">
+        <input type="text" class="url-input" id="url-in"
+          placeholder="enter website url"
+          autocomplete="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')doExtract()">
+        <button class="btn-extract" id="extract-btn" onclick="doExtract()">
+          <div class="spinner" id="spinner"></div>
+          <span id="extract-label">Extract</span>
+        </button>
+      </div>
+      <div id="err-msg"></div>
+      <div id="results">
+        <div class="rf-list">
+          <div class="rf"><div class="rf-label">Business</div><div class="rf-value" id="r-name"></div><button class="copy-btn" onclick="copy('r-name')">Copy</button></div>
+          <div class="rf"><div class="rf-label">Owner</div><div class="rf-value" id="r-owner"></div><button class="copy-btn" onclick="copy('r-owner')">Copy</button></div>
+          <div class="rf"><div class="rf-label">Phone</div><div class="rf-value" id="r-phone"></div><button class="copy-btn" onclick="copy('r-phone')">Copy</button></div>
+          <div class="rf"><div class="rf-label">Email</div><div class="rf-value" id="r-email"></div><button class="copy-btn" onclick="copy('r-email')">Copy</button></div>
+          <div class="rf"><div class="rf-label">Address</div><div class="rf-value" id="r-address"></div><button class="copy-btn" onclick="copy('r-address')">Copy</button></div>
         </div>
-        <div class="rf">
-          <div class="rf-label">Owner name</div>
-          <div class="rf-value" id="r-owner"></div>
-          <button class="copy-btn" onclick="copy('r-owner')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Phone</div>
-          <div class="rf-value" id="r-phone"></div>
-          <button class="copy-btn" onclick="copy('r-phone')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Email</div>
-          <div class="rf-value" id="r-email"></div>
-          <button class="copy-btn" onclick="copy('r-email')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Address</div>
-          <div class="rf-value" id="r-address"></div>
-          <button class="copy-btn" onclick="copy('r-address')">Copy</button>
+        <div class="results-actions">
+          <button class="btn-save" onclick="saveLead()">Save lead</button>
+          <button class="btn-clear" onclick="clearResults()">Clear</button>
         </div>
       </div>
-      <div class="results-actions">
-        <button class="btn-save" onclick="saveLead()">Save lead</button>
-        <button class="btn-clear" onclick="clearResults()">Clear</button>
-      </div>
     </div>
-  </div>
 
-  <!-- Leads list -->
-  <div class="leads-header">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <span class="leads-title">Leads<span class="leads-count" id="lead-count"></span></span>
-      <div class="filter-row" id="filter-row">
-        <button class="filter-btn active" data-f="all" onclick="setFilter('all',this)">All</button>
-        <button class="filter-btn" data-f="New" onclick="setFilter('New',this)">New</button>
-        <button class="filter-btn" data-f="Contacted" onclick="setFilter('Contacted',this)">Contacted</button>
-        <button class="filter-btn" data-f="Quoted" onclick="setFilter('Quoted',this)">Quoted</button>
-        <button class="filter-btn" data-f="Won" onclick="setFilter('Won',this)">Won</button>
-        <button class="filter-btn" data-f="Lost" onclick="setFilter('Lost',this)">Lost</button>
+    <!-- Right: leads table -->
+    <div id="leads-panel">
+      <div class="leads-header">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="leads-count" id="lead-count"></span>
+          <div class="filter-row" id="filter-row">
+            <button class="filter-btn active" data-f="all" onclick="setFilter('all',this)">All</button>
+            <button class="filter-btn" data-f="New" onclick="setFilter('New',this)">New</button>
+            <button class="filter-btn" data-f="Contacted" onclick="setFilter('Contacted',this)">Contacted</button>
+            <button class="filter-btn" data-f="Quoted" onclick="setFilter('Quoted',this)">Quoted</button>
+            <button class="filter-btn" data-f="Won" onclick="setFilter('Won',this)">Won</button>
+            <button class="filter-btn" data-f="Lost" onclick="setFilter('Lost',this)">Lost</button>
+          </div>
+        </div>
+        <input type="text" class="search-in" id="search-in" placeholder="Search…" oninput="renderTable()">
       </div>
-    </div>
-    <input type="text" class="search-in" id="search-in" placeholder="Search…" oninput="renderTable()">
-  </div>
-
-  <div id="leads-wrap">
+      <div id="leads-wrap">
     <table id="leads-table">
       <thead>
         <tr>
@@ -247,9 +238,12 @@
       <tbody id="tbody"></tbody>
     </table>
     <div class="empty-state" id="empty-state" style="display:none">
-      No leads yet — extract one above to get started.
+      No leads yet — extract one to get started.
     </div>
-  </div>
+      </div>
+    </div><!-- /leads-panel -->
+
+  </div><!-- /split -->
 
 </div>
 
