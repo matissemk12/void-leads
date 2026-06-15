@@ -29,6 +29,13 @@
     }
     @keyframes fp-fadein{to{opacity:1}}
 
+    /* Blur-only overlay — softens dots into glowing streaks without the dark dot fill */
+    #fp-ol{
+      position:absolute;inset:0;z-index:1;
+      backdrop-filter:blur(0.5rem);
+      -webkit-backdrop-filter:blur(0.5rem);
+    }
+
     /* Animated pattern — matches inner motion.div */
     #fp-bg{
       position:absolute;inset:0;
@@ -244,6 +251,7 @@
 <body>
 <div id="fp-wrap">
   <div id="fp-bg"></div>
+  <div id="fp-ol"></div>
 </div>
 <div id="app">
 
