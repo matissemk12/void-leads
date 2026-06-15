@@ -75,6 +75,35 @@ function extractEmails(html) {
   return [...found].slice(0,3);
 }
 
+function extractOwner(html) {
+  for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      for (const d of [].concat(JSON.parse(raw))) {
+        if (d.founder) {
+          const f = Array.isArray(d.founder) ? d.founder[0] : d.founder;
+          if (typeof f === 'string' && f.length > 1) return f;
+          if (f && f.name) return f.name;
+        }
+        for (const key of ['member','employee','personnel']) {
+          if (d[key]) {
+            const m = Array.isArray(d[key]) ? d[key][0] : d[key];
+            if (m && m.name && /^[A-Z][a-z]/.test(m.name)) return m.name;
+          }
+        }
+      }
+    } catch {}
+  }
+  const metaM = html.match(/<meta[^>]+name=["']author["'][^>]+content=["']([^"']{3,50})["']/i)
+             || html.match(/<meta[^>]+content=["']([^"']{3,50})["'][^>]+name=["']author["']/i);
+  if (metaM && /[A-Z][a-z]+ [A-Z]/.test(metaM[1])) return metaM[1].trim();
+
+  const text = html.replace(/<[^>]+>/g, ' ');
+  const ownerM = text.match(/\b(?:owner|owned by|founder|proprietor|operated by)[\s:–-]+([A-Z][a-z]+ (?:[A-Z][a-z]+ )?[A-Z][a-z]+)/i);
+  if (ownerM) return ownerM[1].trim();
+
+  return null;
+}
+
 function extractAddress(html) {
   for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
     try {
@@ -115,6 +144,7 @@ module.exports = async function handler(req, res) {
 
     res.json({
       name:    extractName(html, target.hostname),
+      owner:   extractOwner(html),
       phones:  extractPhones(html),
       emails:  extractEmails(html),
       address: extractAddress(html),

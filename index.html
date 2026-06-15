@@ -11,115 +11,15 @@
       --bg:#0c0c0c;--surface:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);
       --ink:#e8e8e8;--muted:rgba(255,255,255,.35);--dim:rgba(255,255,255,.15);
       --accent:#fff;--ease:cubic-bezier(.4,0,.2,1);
-      --new:#3b82f6;--contacted:#f59e0b;--quoted:#8b5cf6;--won:#22c55e;--lost:#6b7280;
+      --new:#3b82f6;--contacted:#f59e0b;--quoted:#8b5cf6;--won:#22c55e;--lost:#ef4444;
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-    /* ── FallingPattern (exact component translation) ── */
+    /* ── DottedSurface background ── */
     html{background:#0c0c0c;min-height:100%}
     body{background:transparent;color:var(--ink);font-family:'Inter',system-ui,sans-serif;
-      font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;
-      position:relative;z-index:0}
-
-    /* Outer wrapper — matches the demo className with mask-image + fade-in */
-    #fp-wrap{
-      position:fixed;inset:0;z-index:-1;
-      opacity:0;
-      animation:fp-fadein .2s ease .05s forwards;
-    }
-    @keyframes fp-fadein{to{opacity:1}}
-
-    /* Blur-only overlay — softens dots into glowing streaks without the dark dot fill */
-    #fp-ol{
-      position:absolute;inset:0;z-index:1;
-      backdrop-filter:blur(0.5rem);
-      -webkit-backdrop-filter:blur(0.5rem);
-    }
-
-    /* Animated pattern — matches inner motion.div */
-    #fp-bg{
-      position:absolute;inset:0;
-      background-color:#0c0c0c;
-      background-image:
-        radial-gradient(4px 100px at 0px 235px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 235px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 117.5px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 252px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 252px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 126px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 150px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 150px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 75px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 253px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 253px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 126.5px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 204px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 204px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 102px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 134px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 134px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 67px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 179px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 179px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 89.5px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 299px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 299px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 149.5px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 215px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 215px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 107.5px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 281px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 281px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 140.5px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 158px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 158px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 79px,#00ff88 100%,transparent 150%),
-        radial-gradient(4px 100px at 0px 210px,#00ff88,transparent),
-        radial-gradient(4px 100px at 300px 210px,#00ff88,transparent),
-        radial-gradient(1.5px 1.5px at 150px 105px,#00ff88 100%,transparent 150%);
-      background-size:
-        300px 235px,300px 235px,300px 235px,
-        300px 252px,300px 252px,300px 252px,
-        300px 150px,300px 150px,300px 150px,
-        300px 253px,300px 253px,300px 253px,
-        300px 204px,300px 204px,300px 204px,
-        300px 134px,300px 134px,300px 134px,
-        300px 179px,300px 179px,300px 179px,
-        300px 299px,300px 299px,300px 299px,
-        300px 215px,300px 215px,300px 215px,
-        300px 281px,300px 281px,300px 281px,
-        300px 158px,300px 158px,300px 158px,
-        300px 210px,300px 210px,300px 210px;
-      animation:fp-fall 80s linear infinite;
-    }
-    @keyframes fp-fall{
-      from{background-position:
-        0px 220px,3px 220px,151.5px 337.5px,
-        25px 24px,28px 24px,176.5px 150px,
-        50px 16px,53px 16px,201.5px 91px,
-        75px 224px,78px 224px,226.5px 230.5px,
-        100px 19px,103px 19px,251.5px 121px,
-        125px 120px,128px 120px,276.5px 187px,
-        150px 31px,153px 31px,301.5px 120.5px,
-        175px 235px,178px 235px,326.5px 384.5px,
-        200px 121px,203px 121px,351.5px 228.5px,
-        225px 224px,228px 224px,376.5px 364.5px,
-        250px 26px,253px 26px,401.5px 105px,
-        275px 75px,278px 75px,426.5px 180px;}
-      to{background-position:
-        0px 6800px,3px 6800px,151.5px 6917.5px,
-        25px 13632px,28px 13632px,176.5px 13758px,
-        50px 5416px,53px 5416px,201.5px 5491px,
-        75px 17175px,78px 17175px,226.5px 17301.5px,
-        100px 5119px,103px 5119px,251.5px 5221px,
-        125px 8428px,128px 8428px,276.5px 8495px,
-        150px 9876px,153px 9876px,301.5px 9965.5px,
-        175px 13391px,178px 13391px,326.5px 13540.5px,
-        200px 14741px,203px 14741px,351.5px 14848.5px,
-        225px 18770px,228px 18770px,376.5px 18910.5px,
-        250px 5082px,253px 5082px,401.5px 5161px,
-        275px 6375px,278px 6375px,426.5px 6480px;}
-    }
+      font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+    #dotted-bg{position:fixed;inset:0;z-index:-1;pointer-events:none}
 
     a{color:inherit;text-decoration:none}
     button{font-family:inherit;cursor:pointer}
@@ -214,7 +114,9 @@
     .badge-contacted{color:var(--contacted);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
     .badge-quoted   {color:var(--quoted);border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.08)}
     .badge-won      {color:var(--won);border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.08)}
-    .badge-lost     {color:var(--lost);border-color:rgba(107,114,128,.3);background:rgba(107,114,128,.08)}
+    .badge-lost     {color:var(--lost);border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08)}
+    tbody tr.row-won {background:rgba(34,197,94,.06)}
+    tbody tr.row-lost{background:rgba(239,68,68,.06)}
     .status-sel{background:transparent;border:none;color:inherit;font-size:inherit;
       font-family:inherit;cursor:pointer;outline:none;padding:0;width:100%}
     .td-date{font-size:11px;color:var(--dim);white-space:nowrap}
@@ -249,10 +151,7 @@
   </style>
 </head>
 <body>
-<div id="fp-wrap">
-  <div id="fp-bg"></div>
-  <div id="fp-ol"></div>
-</div>
+<div id="dotted-bg"></div>
 <div id="app">
 
   <!-- Header -->
@@ -287,6 +186,11 @@
           <div class="rf-label">Business name</div>
           <div class="rf-value" id="r-name"></div>
           <button class="copy-btn" onclick="copy('r-name')">Copy</button>
+        </div>
+        <div class="rf">
+          <div class="rf-label">Owner name</div>
+          <div class="rf-value" id="r-owner"></div>
+          <button class="copy-btn" onclick="copy('r-owner')">Copy</button>
         </div>
         <div class="rf">
           <div class="rf-label">Phone</div>
@@ -411,6 +315,7 @@
       }
     };
     set('r-name',    d.name,    'Not found');
+    set('r-owner',   d.owner,   'Not found');
     set('r-phone',   d.phones,  'Not found');
     set('r-email',   d.emails,  'Not found');
     set('r-address', d.address, 'Not found');
@@ -441,6 +346,7 @@
     const lead = {
       id: Date.now().toString(),
       name:    extracted.name || '',
+      owner:   extracted.owner || '',
       phones:  extracted.phones || [],
       emails:  extracted.emails || [],
       address: extracted.address || '',
@@ -559,8 +465,9 @@
           `<option value="${s}"${s===l.status?' selected':''}>${s}</option>`
         ).join('');
 
-        return `<tr>
-          <td class="td-name">${esc(l.name||'—')}</td>
+        const rowCls = l.status==='Won' ? ' class="row-won"' : l.status==='Lost' ? ' class="row-lost"' : '';
+        return `<tr${rowCls}>
+          <td class="td-name">${esc(l.name||'—')}${l.owner ? `<div style="font-size:10px;font-weight:400;color:var(--muted);margin-top:2px">${esc(l.owner)}</div>` : ''}</td>
           <td>${esc(phone)}</td>
           <td style="font-size:11px;color:var(--muted)">${esc(email)}</td>
           <td class="td-url"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(host)}</a></td>
@@ -611,6 +518,64 @@
 
   // ── init ──
   renderTable();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"></script>
+<script>
+  (function() {
+    const container = document.getElementById('dotted-bg');
+    if (!container || !window.THREE) return;
+    const T = THREE;
+    const SEP = 150, AX = 40, AY = 60;
+
+    const scene = new T.Scene();
+    const camera = new T.PerspectiveCamera(60, innerWidth / innerHeight, 1, 10000);
+    camera.position.set(0, 355, 1220);
+
+    const renderer = new T.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    const positions = [], colors = [];
+    for (let ix = 0; ix < AX; ix++) {
+      for (let iy = 0; iy < AY; iy++) {
+        positions.push(ix * SEP - (AX * SEP) / 2, 0, iy * SEP - (AY * SEP) / 2);
+        colors.push(200/255, 200/255, 200/255);
+      }
+    }
+
+    const geo = new T.BufferGeometry();
+    geo.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('color',    new T.Float32BufferAttribute(colors, 3));
+
+    const mat = new T.PointsMaterial({ size: 8, vertexColors: true, transparent: true, opacity: 0.8, sizeAttenuation: true });
+    scene.add(new T.Points(geo, mat));
+
+    let count = 0;
+    const posAttr = geo.attributes.position;
+    const arr = posAttr.array;
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      let i = 0;
+      for (let ix = 0; ix < AX; ix++) {
+        for (let iy = 0; iy < AY; iy++) {
+          arr[i * 3 + 1] = Math.sin((ix + count) * 0.3) * 50 + Math.sin((iy + count) * 0.5) * 50;
+          i++;
+        }
+      }
+      posAttr.needsUpdate = true;
+      renderer.render(scene, camera);
+      count += 0.1;
+    })();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  })();
 </script>
 </body>
 </html>
