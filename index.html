@@ -38,11 +38,16 @@
       background:transparent;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.06em;transition:all 180ms}
     .btn-sm:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
-    /* ── scraper ── */
-    #scraper{background:transparent;border:none;padding:0 0 28px;margin-bottom:8px}
+    /* ── main panel ── */
+    #main-panel{background:rgba(0,0,0,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+
+    /* ── scraper (top slot inside panel) ── */
+    #scraper{background:transparent;border:none;padding:20px 24px;margin-bottom:0;
+      border-bottom:1px solid rgba(255,255,255,.08)}
     .scraper-label{font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.5);
       text-transform:uppercase;text-align:center;margin-bottom:12px}
-    .url-row{display:flex;gap:0;max-width:560px;margin:0 auto}
+    .url-row{display:flex;gap:0}
     .url-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);
       border-right:none;border-radius:7px 0 0 7px;padding:13px 18px;font-size:14px;color:#fff;outline:none;
       animation:pulse-glow 2.8s ease-in-out infinite;transition:background 200ms}
@@ -83,7 +88,8 @@
     #err-msg{margin-top:14px;font-size:12px;color:#f87171;letter-spacing:.04em}
 
     /* ── leads section ── */
-    .leads-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .leads-header{display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:0}
     .leads-title{font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
     .leads-count{font-size:11px;color:var(--dim);margin-left:8px}
     .filter-row{display:flex;gap:8px;flex-wrap:wrap}
@@ -96,7 +102,7 @@
     .search-in::placeholder{color:var(--dim)}
 
     /* ── table ── */
-    #leads-wrap{overflow-x:auto;margin-top:12px;background:rgba(0,0,0,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:6px;border:1px solid rgba(255,255,255,.08)}
+    #leads-wrap{overflow-x:auto;background:transparent;border:none;border-radius:0;margin-top:0}
     table{width:100%;border-collapse:collapse}
     thead th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.1em;
       color:rgba(255,255,255,.45);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);
@@ -166,89 +172,93 @@
     </div>
   </div>
 
-  <!-- Scraper -->
-  <div id="scraper">
-    <div class="url-row">
-      <input type="text" class="url-input" id="url-in"
-        placeholder="mikes-garage-cleaning.com"
-        autocomplete="off" spellcheck="false">
-      <button class="btn-extract" id="extract-btn" onclick="doExtract()">
-        <div class="spinner" id="spinner"></div>
-        <span id="extract-label">Extract</span>
-      </button>
-    </div>
-    <div id="err-msg"></div>
+  <!-- Main panel -->
+  <div id="main-panel">
 
-    <!-- Results -->
-    <div id="results">
-      <div class="results-grid">
-        <div class="rf">
-          <div class="rf-label">Business name</div>
-          <div class="rf-value" id="r-name"></div>
-          <button class="copy-btn" onclick="copy('r-name')">Copy</button>
+    <!-- Input row -->
+    <div id="scraper">
+      <div class="url-row">
+        <input type="text" class="url-input" id="url-in"
+          placeholder="enter website url"
+          autocomplete="off" spellcheck="false">
+        <button class="btn-extract" id="extract-btn" onclick="doExtract()">
+          <div class="spinner" id="spinner"></div>
+          <span id="extract-label">Extract</span>
+        </button>
+      </div>
+      <div id="err-msg"></div>
+      <div id="results">
+        <div class="results-grid">
+          <div class="rf">
+            <div class="rf-label">Business name</div>
+            <div class="rf-value" id="r-name"></div>
+            <button class="copy-btn" onclick="copy('r-name')">Copy</button>
+          </div>
+          <div class="rf">
+            <div class="rf-label">Owner name</div>
+            <div class="rf-value" id="r-owner"></div>
+            <button class="copy-btn" onclick="copy('r-owner')">Copy</button>
+          </div>
+          <div class="rf">
+            <div class="rf-label">Phone</div>
+            <div class="rf-value" id="r-phone"></div>
+            <button class="copy-btn" onclick="copy('r-phone')">Copy</button>
+          </div>
+          <div class="rf">
+            <div class="rf-label">Email</div>
+            <div class="rf-value" id="r-email"></div>
+            <button class="copy-btn" onclick="copy('r-email')">Copy</button>
+          </div>
+          <div class="rf">
+            <div class="rf-label">Address</div>
+            <div class="rf-value" id="r-address"></div>
+            <button class="copy-btn" onclick="copy('r-address')">Copy</button>
+          </div>
         </div>
-        <div class="rf">
-          <div class="rf-label">Owner name</div>
-          <div class="rf-value" id="r-owner"></div>
-          <button class="copy-btn" onclick="copy('r-owner')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Phone</div>
-          <div class="rf-value" id="r-phone"></div>
-          <button class="copy-btn" onclick="copy('r-phone')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Email</div>
-          <div class="rf-value" id="r-email"></div>
-          <button class="copy-btn" onclick="copy('r-email')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Address</div>
-          <div class="rf-value" id="r-address"></div>
-          <button class="copy-btn" onclick="copy('r-address')">Copy</button>
+        <div class="results-actions">
+          <button class="btn-save" onclick="saveLead()">Save lead</button>
+          <button class="btn-clear" onclick="clearResults()">Clear</button>
         </div>
       </div>
-      <div class="results-actions">
-        <button class="btn-save" onclick="saveLead()">Save lead</button>
-        <button class="btn-clear" onclick="clearResults()">Clear</button>
+    </div>
+
+    <!-- Filter toolbar -->
+    <div class="leads-header">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="leads-count" id="lead-count"></span>
+        <div class="filter-row" id="filter-row">
+          <button class="filter-btn active" data-f="all" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" data-f="New" onclick="setFilter('New',this)">New</button>
+          <button class="filter-btn" data-f="Contacted" onclick="setFilter('Contacted',this)">Contacted</button>
+          <button class="filter-btn" data-f="Quoted" onclick="setFilter('Quoted',this)">Quoted</button>
+          <button class="filter-btn" data-f="Won" onclick="setFilter('Won',this)">Won</button>
+          <button class="filter-btn" data-f="Lost" onclick="setFilter('Lost',this)">Lost</button>
+        </div>
+      </div>
+      <input type="text" class="search-in" id="search-in" placeholder="Search…" oninput="renderTable()">
+    </div>
+
+    <!-- Table -->
+    <div id="leads-wrap">
+      <table id="leads-table">
+        <thead>
+          <tr>
+            <th onclick="sortBy('name')">Name</th>
+            <th onclick="sortBy('phone')">Phone</th>
+            <th onclick="sortBy('email')">Email</th>
+            <th class="td-url" onclick="sortBy('url')">Website</th>
+            <th onclick="sortBy('status')">Status</th>
+            <th class="td-date" onclick="sortBy('date')">Added</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state" style="display:none">
+        No leads yet — paste a URL above to get started.
       </div>
     </div>
-  </div>
 
-  <!-- Leads list -->
-  <div class="leads-header">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <span class="leads-title">Leads<span class="leads-count" id="lead-count"></span></span>
-      <div class="filter-row" id="filter-row">
-        <button class="filter-btn active" data-f="all" onclick="setFilter('all',this)">All</button>
-        <button class="filter-btn" data-f="New" onclick="setFilter('New',this)">New</button>
-        <button class="filter-btn" data-f="Contacted" onclick="setFilter('Contacted',this)">Contacted</button>
-        <button class="filter-btn" data-f="Quoted" onclick="setFilter('Quoted',this)">Quoted</button>
-        <button class="filter-btn" data-f="Won" onclick="setFilter('Won',this)">Won</button>
-        <button class="filter-btn" data-f="Lost" onclick="setFilter('Lost',this)">Lost</button>
-      </div>
-    </div>
-    <input type="text" class="search-in" id="search-in" placeholder="Search…" oninput="renderTable()">
-  </div>
-
-  <div id="leads-wrap">
-    <table id="leads-table">
-      <thead>
-        <tr>
-          <th onclick="sortBy('name')">Name</th>
-          <th onclick="sortBy('phone')">Phone</th>
-          <th onclick="sortBy('email')">Email</th>
-          <th class="td-url" onclick="sortBy('url')">Website</th>
-          <th onclick="sortBy('status')">Status</th>
-          <th class="td-date" onclick="sortBy('date')">Added</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <div class="empty-state" id="empty-state" style="display:none">
-      No leads yet — extract one above to get started.
-    </div>
   </div>
 
 </div>
