@@ -1,27 +1,54 @@
+function flattenJsonLd(data) {
+  const out = [];
+  const walk = (d) => {
+    if (Array.isArray(d)) { d.forEach(walk); return; }
+    if (!d || typeof d !== 'object') return;
+    if (d['@graph']) { walk(d['@graph']); return; }
+    out.push(d);
+  };
+  walk(data);
+  return out;
+}
+
 function extractName(html, hostname) {
   let m;
+
+  // og:site_name
   m = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i)
    || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:site_name["']/i);
+  if (m && m[1].trim().length > 1) return m[1].trim();
+
+  // JSON-LD — flatten @graph, prefer business/org types then WebSite
+  const ldItems = [];
+  for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try { ldItems.push(...flattenJsonLd(JSON.parse(raw))); } catch {}
+  }
+  for (const d of ldItems) {
+    if (d.name && d['@type'] && /business|organization|service|company|local|store|professional/i.test(String(d['@type'])))
+      return Array.isArray(d.name) ? d.name[0] : d.name;
+  }
+  for (const d of ldItems) {
+    if (d.name && d['@type'] && /website/i.test(String(d['@type'])))
+      return Array.isArray(d.name) ? d.name[0] : d.name;
+  }
+
+  // application-name meta
+  m = html.match(/<meta[^>]+name=["']application-name["'][^>]+content=["']([^"']{2,60})["']/i)
+   || html.match(/<meta[^>]+content=["']([^"']{2,60})["'][^>]+name=["']application-name["']/i);
   if (m) return m[1].trim();
 
-  for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
-    try {
-      const arr = [].concat(JSON.parse(raw));
-      for (const d of arr) {
-        if (d.name && d['@type'] && /business|organization|service|company|local/i.test(d['@type'])) return d.name;
-      }
-    } catch {}
-  }
-
+  // Title — pick the longest segment (business names beat "Home" / "Services")
   m = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   if (m) {
-    const t = m[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").trim()
-                   .replace(/\s*[|–\-—:·•»]\s*.+$/, '').trim();
-    if (t.length > 1) return t;
+    const raw = m[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").trim();
+    const parts = raw.split(/\s*[|–\-—:·•»]\s*/);
+    const best = parts.reduce((a, b) => b.length > a.length ? b : a, '').trim();
+    if (best.length > 1) return best;
   }
 
+  // H1
   m = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  if (m) { const t = m[1].replace(/<[^>]+>/g,'').trim(); if (t.length > 1) return t; }
+  if (m) { const t = m[1].replace(/<[^>]+>/g,'').trim(); if (t.length > 1 && t.length < 80) return t; }
 
   return hostname.replace(/^www\./,'');
 }
