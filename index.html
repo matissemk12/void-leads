@@ -28,19 +28,19 @@
     #app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:32px 24px 80px}
 
     /* ── header ── */
-    .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
-      padding-bottom:20px;border-bottom:1px solid var(--border)}
-    .hd-logo{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.08em;color:var(--muted)}
-    .hd-v{width:22px;height:22px;border:1px solid var(--border);border-radius:3px;
-      display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--ink)}
-    .hd-actions{display:flex;gap:10px;align-items:center}
-    .btn-sm{padding:7px 14px;border:1px solid var(--border);border-radius:3px;
-      background:transparent;color:var(--muted);font-size:11px;letter-spacing:.06em;transition:all 180ms}
-    .btn-sm:hover{border-color:rgba(255,255,255,.25);color:var(--ink)}
+    .hd{position:relative;display:flex;align-items:center;justify-content:center;
+      margin-bottom:48px;padding-bottom:0;border-bottom:none}
+    .hd-logo{font-size:24px;font-weight:300;letter-spacing:.4em;color:#fff;
+      text-transform:uppercase;text-indent:.4em}
+    .hd-v{display:none}
+    .hd-actions{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;gap:10px}
+    .btn-sm{padding:7px 14px;border:1px solid rgba(255,255,255,.12);border-radius:3px;
+      background:transparent;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.06em;transition:all 180ms}
+    .btn-sm:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
     /* ── scraper ── */
-    #scraper{background:var(--surface);border:1px solid var(--border);border-radius:6px;
-      padding:24px;margin-bottom:24px}
+    #scraper{background:rgba(0,0,0,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:24px;margin-bottom:24px}
     .scraper-label{font-size:10px;letter-spacing:.14em;color:var(--muted);
       text-transform:uppercase;margin-bottom:12px}
     .url-row{display:flex;gap:10px}
@@ -91,11 +91,11 @@
     .search-in::placeholder{color:var(--dim)}
 
     /* ── table ── */
-    #leads-wrap{overflow-x:auto;margin-top:12px;background:#000;border-radius:6px;border:1px solid rgba(255,255,255,.08)}
+    #leads-wrap{overflow-x:auto;margin-top:12px;background:rgba(0,0,0,.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:6px;border:1px solid rgba(255,255,255,.08)}
     table{width:100%;border-collapse:collapse}
     thead th{padding:10px 12px;text-align:left;font-size:10px;letter-spacing:.1em;
       color:rgba(255,255,255,.45);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);
-      white-space:nowrap;cursor:pointer;user-select:none;background:#000}
+      white-space:nowrap;cursor:pointer;user-select:none;background:transparent}
     thead th:hover{color:#fff}
     thead th.sort-asc::after{content:' ↑'}
     thead th.sort-desc::after{content:' ↓'}
@@ -155,10 +155,7 @@
 
   <!-- Header -->
   <div class="hd">
-    <div class="hd-logo">
-      <div class="hd-v">V</div>
-      Void Leads
-    </div>
+    <div class="hd-logo">Void Leads</div>
     <div class="hd-actions">
       <button class="btn-sm" onclick="exportCSV()">Export CSV</button>
     </div>
