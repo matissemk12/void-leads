@@ -8,14 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#f5f5f7;--surface:rgba(0,0,0,.04);--border:rgba(0,0,0,.1);
-      --ink:#111;--muted:rgba(0,0,0,.5);--dim:rgba(0,0,0,.35);
-      --accent:#111;--ease:cubic-bezier(.4,0,.2,1);
-      --new:#2563eb;--contacted:#d97706;--quoted:#7c3aed;--won:#16a34a;--lost:#dc2626;
+      --bg:#080810;--surface:rgba(255,255,255,.05);--border:rgba(255,255,255,.08);
+      --ink:#dde0f0;--muted:rgba(221,224,240,.6);--dim:rgba(221,224,240,.4);
+      --accent:#fff;--ease:cubic-bezier(.4,0,.2,1);
+      --new:#60a5fa;--contacted:#fbbf24;--quoted:#a78bfa;--won:#4ade80;--lost:#f87171;
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-    html,body{background:#f5f5f7;min-height:100%}
+    html,body{background:#080810;min-height:100%}
     body{color:var(--ink);font-family:'Inter',system-ui,sans-serif;
       font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
     #dotted-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
@@ -30,34 +30,34 @@
     /* ── header ── */
     .hd{position:relative;display:flex;align-items:center;justify-content:center;
       margin-bottom:36px;padding-bottom:0;border-bottom:none}
-    .hd-logo{font-size:24px;font-weight:300;letter-spacing:.4em;color:#111;
+    .hd-logo{font-size:24px;font-weight:300;letter-spacing:.4em;color:#fff;
       text-transform:uppercase;text-indent:.4em}
     .hd-v{display:none}
     .hd-actions{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:10px}
-    .btn-sm{padding:7px 14px;border:1px solid rgba(0,0,0,.15);border-radius:20px;
-      background:transparent;color:rgba(0,0,0,.4);font-size:11px;letter-spacing:.06em;transition:all 180ms}
-    .btn-sm:hover{border-color:rgba(0,0,0,.35);color:#111}
+    .btn-sm{padding:7px 14px;border:1px solid rgba(255,255,255,.12);border-radius:20px;
+      background:transparent;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.06em;transition:all 180ms}
+    .btn-sm:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
     /* ── url bar (in header) ── */
     #url-bar{display:flex;align-items:center}
-    .url-input{width:190px;background:rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.15);
-      border-right:none;border-radius:20px 0 0 20px;padding:8px 14px;font-size:12px;color:#111;outline:none;
+    .url-input{width:190px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);
+      border-right:none;border-radius:20px 0 0 20px;padding:8px 14px;font-size:12px;color:#fff;outline:none;
       animation:pulse-glow 2.8s ease-in-out infinite;transition:width 300ms ease,background 200ms}
-    .url-input:focus{width:240px;background:rgba(0,0,0,.07);animation:none;
-      border-color:rgba(0,0,0,.4);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
-    .url-input::placeholder{color:rgba(0,0,0,.3)}
+    .url-input:focus{width:240px;background:rgba(255,255,255,.08);animation:none;
+      border-color:rgba(255,255,255,.45);box-shadow:0 0 16px rgba(255,255,255,.08)}
+    .url-input::placeholder{color:rgba(255,255,255,.25)}
     @keyframes pulse-glow{
-      0%,100%{border-color:rgba(0,0,0,.15);box-shadow:none}
-      50%{border-color:rgba(0,0,0,.35);box-shadow:0 0 12px rgba(0,0,0,.08)}
+      0%,100%{border-color:rgba(255,255,255,.15);box-shadow:none}
+      50%{border-color:rgba(255,255,255,.4);box-shadow:0 0 14px rgba(255,255,255,.08)}
     }
-    .btn-extract{padding:8px 13px;background:rgba(0,0,0,.07);color:rgba(0,0,0,.6);
-      border:1px solid rgba(0,0,0,.15);border-left:none;
+    .btn-extract{padding:8px 13px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
+      border:1px solid rgba(255,255,255,.15);border-left:none;
       border-radius:0 20px 20px 0;font-size:14px;line-height:1;
       transition:background 180ms,color 180ms;display:flex;align-items:center;gap:6px}
-    .btn-extract:hover{background:rgba(0,0,0,.14);color:#111}
+    .btn-extract:hover{background:rgba(255,255,255,.15);color:#fff}
     .btn-extract:disabled{opacity:.3;cursor:not-allowed}
-    .spinner{width:11px;height:11px;border:1.5px solid rgba(0,0,0,.15);
-      border-top-color:#111;border-radius:50%;animation:spin .6s linear infinite;display:none}
+    .spinner{width:11px;height:11px;border:1.5px solid rgba(255,255,255,.2);
+      border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
     @keyframes spin{to{transform:rotate(360deg)}}
 
     /* ── scraper results (below header) ── */
@@ -66,21 +66,21 @@
     /* ── results ── */
     #results{margin-top:24px;display:none}
     .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:18px}
-    .rf{background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:16px}
+    .rf{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:16px}
     .rf-label{font-size:9px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-    .rf-value{font-size:13px;color:#111;word-break:break-all;min-height:18px;font-weight:500}
+    .rf-value{font-size:13px;color:#fff;word-break:break-all;min-height:18px;font-weight:500}
     .rf-value.empty{color:var(--dim);font-style:italic;font-size:11px;font-weight:400}
     .copy-btn{background:none;border:none;color:var(--dim);font-size:10px;letter-spacing:.06em;
       padding:0;margin-top:8px;transition:color 180ms;display:block}
-    .copy-btn:hover{color:#111}
+    .copy-btn:hover{color:#fff}
     .results-actions{display:flex;gap:10px;align-items:center;padding-top:4px}
-    .btn-save{padding:10px 22px;background:#111;color:#fff;border:none;border-radius:6px;
+    .btn-save{padding:10px 22px;background:#fff;color:#000;border:none;border-radius:6px;
       font-size:12px;font-weight:600;letter-spacing:.04em;transition:opacity 180ms}
-    .btn-save:hover{opacity:.8}
-    .btn-clear{padding:10px 16px;background:transparent;border:1px solid rgba(0,0,0,.12);
+    .btn-save:hover{opacity:.88}
+    .btn-clear{padding:10px 16px;background:transparent;border:1px solid rgba(255,255,255,.12);
       border-radius:6px;color:var(--muted);font-size:12px;letter-spacing:.04em;transition:all 180ms}
-    .btn-clear:hover{border-color:rgba(0,0,0,.3);color:#111}
-    #err-msg{margin-top:14px;font-size:12px;color:#dc2626;letter-spacing:.04em}
+    .btn-clear:hover{border-color:rgba(255,255,255,.3);color:#fff}
+    #err-msg{margin-top:14px;font-size:12px;color:#f87171;letter-spacing:.04em}
 
     /* ── leads section ── */
     .leads-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -89,10 +89,10 @@
     .filter-row{display:flex;gap:8px;flex-wrap:wrap}
     .filter-btn{padding:5px 12px;border:1px solid var(--border);border-radius:100px;
       background:transparent;color:var(--dim);font-size:11px;letter-spacing:.04em;transition:all 180ms}
-    .filter-btn:hover,.filter-btn.active{border-color:rgba(0,0,0,.4);color:#111}
-    .search-in{background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:3px;
+    .filter-btn:hover,.filter-btn.active{border-color:rgba(255,255,255,.3);color:var(--ink)}
+    .search-in{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:3px;
       padding:6px 12px;color:var(--ink);font-size:12px;width:180px;outline:none;transition:border-color 200ms}
-    .search-in:focus{border-color:rgba(0,0,0,.3)}
+    .search-in:focus{border-color:rgba(255,255,255,.25)}
     .search-in::placeholder{color:var(--dim)}
 
     /* ── table ── */
@@ -133,17 +133,17 @@
     .empty-state{padding:60px 0;text-align:center;color:rgba(255,255,255,.35);font-size:12px;letter-spacing:.04em}
 
     /* ── notes modal ── */
-    #modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:100;
+    #modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;
       display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
     #modal-bg.open{display:flex}
-    #modal{background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:10px;
+    #modal{background:#141418;border:1px solid rgba(255,255,255,.08);border-radius:10px;
       padding:24px;width:460px;max-width:92vw}
-    .modal-title{font-size:13px;font-weight:500;margin-bottom:6px;color:#111}
+    .modal-title{font-size:13px;font-weight:500;margin-bottom:6px;color:#fff}
     .modal-sub{font-size:11px;color:var(--muted);margin-bottom:18px;letter-spacing:.04em}
-    #note-area{width:100%;min-height:120px;background:rgba(0,0,0,.03);
-      border:1px solid rgba(0,0,0,.1);border-radius:6px;padding:12px;
-      color:#111;font-size:13px;resize:vertical;outline:none;transition:border-color 200ms}
-    #note-area:focus{border-color:rgba(0,0,0,.3)}
+    #note-area{width:100%;min-height:120px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:12px;
+      color:var(--ink);font-size:13px;resize:vertical;outline:none;transition:border-color 200ms}
+    #note-area:focus{border-color:rgba(255,255,255,.2)}
     .modal-actions{display:flex;gap:10px;margin-top:14px;justify-content:flex-end}
 
     @media(max-width:600px){
@@ -543,7 +543,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const focal = (canvas.height / 2) / Math.tan(FOV / 2);
     const hw = canvas.width / 2, hh = canvas.height / 2;
-    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillStyle = 'rgba(180,185,220,0.2)';
 
     for (let ix = 0; ix < AX; ix++) {
       for (let iy = 0; iy < AY; iy++) {
