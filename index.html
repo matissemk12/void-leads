@@ -160,9 +160,8 @@
 
   <!-- Header -->
   <div class="hd">
-    <div class="hd-logo">Void Leads</div>
-    <div class="hd-actions">
-      <div id="url-bar">
+    <div style="position:absolute;left:0;top:50%;transform:translateY(-50%)">
+      <div id="url-bar" style="display:flex;align-items:center">
         <input type="text" class="url-input" id="url-in"
           placeholder="website url"
           autocomplete="off" spellcheck="false"
@@ -172,6 +171,9 @@
           <span id="extract-label">→</span>
         </button>
       </div>
+    </div>
+    <div class="hd-logo">Void Leads</div>
+    <div class="hd-actions">
       <button class="btn-sm" id="find-toggle" onclick="toggleFind()">Find Leads</button>
       <button class="btn-sm" onclick="exportCSV()">Export</button>
     </div>
