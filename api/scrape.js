@@ -102,87 +102,6 @@ function extractEmails(html) {
   return [...found].slice(0,3);
 }
 
-// Returns true only for "First Last" or "First Middle Last" — real person names only
-function isPersonName(s) {
-  if (!s || typeof s !== 'string') return false;
-  const parts = s.trim().split(/\s+/);
-  if (parts.length < 2 || parts.length > 3) return false;
-  return parts.every(p => /^[A-Z][a-z]{1,19}$/.test(p));
-}
-
-function name(s) {
-  const v = typeof s === 'string' ? s.trim() : (s && s.name ? String(s.name).trim() : null);
-  return isPersonName(v) ? v : null;
-}
-
-function extractOwner(html) {
-  // JSON-LD — flatten @graph first
-  const ldItems = [];
-  for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
-    try { ldItems.push(...flattenJsonLd(JSON.parse(raw))); } catch {}
-  }
-
-  // founder / owner fields on any entity
-  for (const d of ldItems) {
-    for (const key of ['founder', 'owner']) {
-      if (d[key]) {
-        const v = Array.isArray(d[key]) ? d[key][0] : d[key];
-        const n = name(v);
-        if (n) return n;
-      }
-    }
-  }
-
-  // Person type with leadership job title
-  for (const d of ldItems) {
-    if (d['@type'] && /^person$/i.test(String(d['@type'])) && d.name) {
-      const title = String(d.jobTitle || '');
-      if (!title || /owner|founder|president|ceo|director|principal|proprietor/i.test(title)) {
-        const n = name(Array.isArray(d.name) ? d.name[0] : d.name);
-        if (n) return n;
-      }
-    }
-  }
-
-  // members/employees with a leadership role
-  for (const d of ldItems) {
-    for (const key of ['member', 'employee', 'personnel']) {
-      if (d[key]) {
-        for (const m of [].concat(d[key])) {
-          if (m && m.name && /owner|founder|president|ceo|director|principal/i.test(String(m.jobTitle || ''))) {
-            const n = name(m.name);
-            if (n) return n;
-          }
-        }
-      }
-    }
-  }
-
-  // meta author
-  const metaM = html.match(/<meta[^>]+name=["']author["'][^>]+content=["']([^"']{3,50})["']/i)
-             || html.match(/<meta[^>]+content=["']([^"']{3,50})["'][^>]+name=["']author["']/i);
-  if (metaM) { const n = name(metaM[1]); if (n) return n; }
-
-  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-
-  // "owned by / operated by / founded by / owner: Name"
-  const ownerM = text.match(/\b(?:owned by|operated by|founded by|owner[:\s–\-]+|proprietor[:\s–\-]+|founder[:\s–\-]+)([A-Z][a-z]+ (?:[A-Z][a-z]+ )?[A-Z][a-z]+)/i);
-  if (ownerM) { const n = name(ownerM[1]); if (n) return n; }
-
-  // "Meet John Smith" / "Hi, I'm John Smith" / "I'm John Smith"
-  const meetM = text.match(/\b(?:meet\s+(?:our\s+)?(?:owner\s+)?|hi[,!]?\s+i'?m\s+|i'?m\s+)([A-Z][a-z]+ [A-Z][a-z]+)/i);
-  if (meetM) { const n = name(meetM[1]); if (n) return n; }
-
-  // footer/bio signature: "– John Smith, Owner" or "John Smith | Owner"
-  const sigM = text.match(/[–\-|]\s*([A-Z][a-z]+ [A-Z][a-z]+)[,\s]+(?:owner|founder|president|ceo|operator)/i);
-  if (sigM) { const n = name(sigM[1]); if (n) return n; }
-
-  // copyright line — "© 2024 John Smith"
-  const copyM = text.match(/©\s*(?:\d{4}\s*)?([A-Z][a-z]+ (?:[A-Z][a-z]+ )?[A-Z][a-z]+)/);
-  if (copyM) { const n = name(copyM[1]); if (n) return n; }
-
-  return null;
-}
 
 function extractAddress(html) {
   for (const [, raw] of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
@@ -222,27 +141,8 @@ module.exports = async function handler(req, res) {
     if (!r.ok) throw new Error(`Site returned ${r.status}`);
     const html = await r.text();
 
-    let owner = extractOwner(html);
-
-    // If no owner on main page, try about/team pages
-    if (!owner) {
-      const secondaryPaths = ['/about-us', '/about', '/team', '/our-team', '/about/team'];
-      for (const path of secondaryPaths) {
-        try {
-          const ar = await fetch(new URL(path, target).toString(), {
-            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
-            signal: AbortSignal.timeout(3500),
-            redirect: 'follow',
-          });
-          if (ar.ok) { owner = extractOwner(await ar.text()); }
-          if (owner) break;
-        } catch {}
-      }
-    }
-
     res.json({
       name:    extractName(html, target.hostname),
-      owner,
       phones:  extractPhones(html),
       emails:  extractEmails(html),
       address: extractAddress(html),

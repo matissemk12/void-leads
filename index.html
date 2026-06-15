@@ -172,8 +172,7 @@
           <span id="extract-label">→</span>
         </button>
       </div>
-      <button class="btn-sm" id="rescrape-btn" onclick="rescrapeOwners()">Rescrape Owners</button>
-      <button class="btn-sm" onclick="exportCSV()">Export</button>
+<button class="btn-sm" onclick="exportCSV()">Export</button>
     </div>
   </div>
 
@@ -188,11 +187,6 @@
           <div class="rf-label">Business name</div>
           <div class="rf-value" id="r-name"></div>
           <button class="copy-btn" onclick="copy('r-name')">Copy</button>
-        </div>
-        <div class="rf">
-          <div class="rf-label">Owner name</div>
-          <div class="rf-value" id="r-owner"></div>
-          <button class="copy-btn" onclick="copy('r-owner')">Copy</button>
         </div>
         <div class="rf">
           <div class="rf-label">Phone</div>
@@ -317,8 +311,7 @@
       }
     };
     set('r-name',    d.name,    'Not found');
-    set('r-owner',   d.owner,   'Not found');
-    set('r-phone',   d.phones,  'Not found');
+set('r-phone',   d.phones,  'Not found');
     set('r-email',   d.emails,  'Not found');
     set('r-address', d.address, 'Not found');
     document.getElementById('results').style.display = 'block';
@@ -348,8 +341,7 @@
     const lead = {
       id: Date.now().toString(),
       name:    extracted.name || '',
-      owner:   extracted.owner || '',
-      phones:  extracted.phones || [],
+phones:  extracted.phones || [],
       emails:  extracted.emails || [],
       address: extracted.address || '',
       url:     extracted.url || '',
@@ -469,7 +461,7 @@
 
         const rowCls = l.status==='Won' ? ' class="row-won"' : l.status==='Lost' ? ' class="row-lost"' : '';
         return `<tr${rowCls}>
-          <td class="td-name">${esc(l.name||'—')}${l.owner ? `<div style="font-size:10px;font-weight:400;color:var(--muted);margin-top:2px">${esc(l.owner)}</div>` : ''}</td>
+          <td class="td-name">${esc(l.name||'—')}</td>
           <td>${esc(phone)}</td>
           <td style="font-size:11px;color:var(--muted)">${esc(email)}</td>
           <td class="td-url"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(host)}</a></td>
@@ -518,27 +510,7 @@
     a.click();
   }
 
-  // ── rescrape owners ──
-  async function rescrapeOwners() {
-    const targets = leads.filter(l => !l.owner && l.url);
-    if (!targets.length) { alert('All leads already have owner names.'); return; }
-    const btn = document.getElementById('rescrape-btn');
-    btn.disabled = true;
-    let updated = 0;
-    for (let i = 0; i < targets.length; i++) {
-      btn.textContent = `${i}/${targets.length}`;
-      try {
-        const res = await fetch(`/api/scrape?url=${encodeURIComponent(targets[i].url)}`);
-        const d = await res.json();
-        if (d.owner) { targets[i].owner = d.owner; updated++; save(); renderTable(); }
-      } catch {}
-    }
-    btn.disabled = false;
-    btn.textContent = 'Rescrape Owners';
-    alert(updated ? `Found owners for ${updated} of ${targets.length} leads.` : 'No new owners found.');
-  }
-
-  // ── init ──
+// ── init ──
   renderTable();
 </script>
 <script>
