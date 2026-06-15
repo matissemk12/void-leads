@@ -29,39 +29,39 @@
 
     /* ── header ── */
     .hd{position:relative;display:flex;align-items:center;justify-content:center;
-      margin-bottom:48px;padding-bottom:0;border-bottom:none}
+      margin-bottom:36px;padding-bottom:0;border-bottom:none}
     .hd-logo{font-size:24px;font-weight:300;letter-spacing:.4em;color:#fff;
       text-transform:uppercase;text-indent:.4em}
     .hd-v{display:none}
-    .hd-actions{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;gap:10px}
-    .btn-sm{padding:7px 14px;border:1px solid rgba(255,255,255,.12);border-radius:3px;
+    .hd-actions{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:10px}
+    .btn-sm{padding:7px 14px;border:1px solid rgba(255,255,255,.12);border-radius:20px;
       background:transparent;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.06em;transition:all 180ms}
     .btn-sm:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
-    /* ── scraper ── */
-    #scraper{background:transparent;border:none;padding:0 0 28px;margin-bottom:8px}
-    .scraper-label{font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.5);
-      text-transform:uppercase;text-align:center;margin-bottom:12px}
-    .url-row{display:flex;gap:0;max-width:560px;margin:0 auto}
-    .url-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);
-      border-right:none;border-radius:7px 0 0 7px;padding:13px 18px;font-size:14px;color:#fff;outline:none;
-      animation:pulse-glow 2.8s ease-in-out infinite;transition:background 200ms}
-    .url-input:focus{background:rgba(255,255,255,.08);animation:none;
-      border-color:rgba(255,255,255,.5);box-shadow:0 0 22px rgba(255,255,255,.12)}
+    /* ── url bar (in header) ── */
+    #url-bar{display:flex;align-items:center}
+    .url-input{width:190px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);
+      border-right:none;border-radius:20px 0 0 20px;padding:8px 14px;font-size:12px;color:#fff;outline:none;
+      animation:pulse-glow 2.8s ease-in-out infinite;transition:width 300ms ease,background 200ms}
+    .url-input:focus{width:240px;background:rgba(255,255,255,.08);animation:none;
+      border-color:rgba(255,255,255,.45);box-shadow:0 0 16px rgba(255,255,255,.08)}
     .url-input::placeholder{color:rgba(255,255,255,.25)}
     @keyframes pulse-glow{
-      0%,100%{border-color:rgba(255,255,255,.18);box-shadow:0 0 0 rgba(255,255,255,0)}
-      50%{border-color:rgba(255,255,255,.45);box-shadow:0 0 18px rgba(255,255,255,.1),0 0 6px rgba(255,255,255,.06)}
+      0%,100%{border-color:rgba(255,255,255,.15);box-shadow:none}
+      50%{border-color:rgba(255,255,255,.4);box-shadow:0 0 14px rgba(255,255,255,.08)}
     }
-    .btn-extract{padding:13px 22px;background:rgba(255,255,255,.1);color:#fff;
-      border:1px solid rgba(255,255,255,.18);border-left:none;
-      border-radius:0 7px 7px 0;font-size:13px;font-weight:500;letter-spacing:.04em;
-      transition:background 180ms;white-space:nowrap;display:flex;align-items:center;gap:8px}
-    .btn-extract:hover{background:rgba(255,255,255,.18)}
+    .btn-extract{padding:8px 13px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
+      border:1px solid rgba(255,255,255,.15);border-left:none;
+      border-radius:0 20px 20px 0;font-size:14px;line-height:1;
+      transition:background 180ms,color 180ms;display:flex;align-items:center;gap:6px}
+    .btn-extract:hover{background:rgba(255,255,255,.15);color:#fff}
     .btn-extract:disabled{opacity:.3;cursor:not-allowed}
-    .spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);
+    .spinner{width:11px;height:11px;border:1.5px solid rgba(255,255,255,.2);
       border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
     @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── scraper results (below header) ── */
+    #scraper{background:transparent;border:none;padding:0;margin-bottom:0}
 
     /* ── results ── */
     #results{margin-top:24px;display:none}
@@ -162,21 +162,22 @@
   <div class="hd">
     <div class="hd-logo">Void Leads</div>
     <div class="hd-actions">
-      <button class="btn-sm" onclick="exportCSV()">Export CSV</button>
+      <div id="url-bar">
+        <input type="text" class="url-input" id="url-in"
+          placeholder="website url"
+          autocomplete="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')doExtract()">
+        <button class="btn-extract" id="extract-btn" onclick="doExtract()">
+          <div class="spinner" id="spinner"></div>
+          <span id="extract-label">→</span>
+        </button>
+      </div>
+      <button class="btn-sm" onclick="exportCSV()">Export</button>
     </div>
   </div>
 
-  <!-- Scraper -->
+  <!-- Results (shown after extract) -->
   <div id="scraper">
-    <div class="url-row">
-      <input type="text" class="url-input" id="url-in"
-        placeholder="mikes-garage-cleaning.com"
-        autocomplete="off" spellcheck="false">
-      <button class="btn-extract" id="extract-btn" onclick="doExtract()">
-        <div class="spinner" id="spinner"></div>
-        <span id="extract-label">Extract</span>
-      </button>
-    </div>
     <div id="err-msg"></div>
 
     <!-- Results -->
