@@ -172,8 +172,25 @@
           <span id="extract-label">→</span>
         </button>
       </div>
-<button class="btn-sm" onclick="exportCSV()">Export</button>
+      <button class="btn-sm" id="find-toggle" onclick="toggleFind()">Find Leads</button>
+      <button class="btn-sm" onclick="exportCSV()">Export</button>
     </div>
+  </div>
+
+  <!-- Find leads bar -->
+  <div id="find-panel" style="display:none;margin-bottom:28px">
+    <div id="find-bar" style="display:flex;align-items:center;justify-content:center;gap:0">
+      <input type="text" class="url-input" id="find-in"
+        placeholder="e.g. plumbers in San Antonio TX"
+        style="width:260px"
+        autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')doFind()">
+      <button class="btn-extract" id="find-btn" onclick="doFind()">
+        <div class="spinner" id="find-spinner"></div>
+        <span id="find-label">→</span>
+      </button>
+    </div>
+    <div id="find-status" style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px;letter-spacing:.04em"></div>
   </div>
 
   <!-- Results (shown after extract) -->
@@ -510,7 +527,61 @@ phones:  extracted.phones || [],
     a.click();
   }
 
-// ── init ──
+  // ── find leads ──
+  function toggleFind() {
+    const p = document.getElementById('find-panel');
+    const open = p.style.display === 'none';
+    p.style.display = open ? 'block' : 'none';
+    document.getElementById('find-toggle').textContent = open ? 'Close' : 'Find Leads';
+    if (open) document.getElementById('find-in').focus();
+  }
+
+  async function doFind() {
+    const q = document.getElementById('find-in').value.trim();
+    if (!q) return;
+    const status = document.getElementById('find-status');
+    const btn = document.getElementById('find-btn');
+    btn.disabled = true;
+    document.getElementById('find-spinner').style.display = 'block';
+    document.getElementById('find-label').style.display = 'none';
+    status.textContent = 'Searching...';
+
+    try {
+      const fr = await fetch(`/api/find?q=${encodeURIComponent(q)}`);
+      const { urls, error } = await fr.json();
+      if (error || !urls || !urls.length) { status.textContent = error || 'No results found.'; return; }
+
+      const existingHosts = new Set(leads.map(l => { try { return new URL(l.url).hostname.replace(/^www\./, ''); } catch { return ''; } }));
+      let added = 0;
+
+      for (let i = 0; i < urls.length; i++) {
+        status.textContent = `Scraping ${i + 1} / ${urls.length}...`;
+        try {
+          const host = new URL(urls[i]).hostname.replace(/^www\./, '');
+          if (existingHosts.has(host)) continue;
+          const sr = await fetch(`/api/scrape?url=${encodeURIComponent(urls[i])}`);
+          const d = await sr.json();
+          if (!d.error && (d.phones?.length || d.emails?.length)) {
+            leads.unshift({ id: Date.now().toString() + i, name: d.name || '', phones: d.phones || [], emails: d.emails || [], address: d.address || '', url: d.url || urls[i], status: 'New', notes: '', date: new Date().toISOString() });
+            existingHosts.add(host);
+            added++;
+            save();
+            renderTable();
+          }
+        } catch {}
+      }
+
+      status.textContent = added ? `Done — added ${added} lead${added > 1 ? 's' : ''}.` : 'No new leads found with contact info.';
+    } catch {
+      status.textContent = 'Search failed.';
+    } finally {
+      btn.disabled = false;
+      document.getElementById('find-spinner').style.display = 'none';
+      document.getElementById('find-label').style.display = 'block';
+    }
+  }
+
+  // ── init ──
   renderTable();
 </script>
 <script>
