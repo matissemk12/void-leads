@@ -15,18 +15,17 @@
     }
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-    /* ── DottedSurface background ── */
-    html{background:#0c0c0c;min-height:100%}
-    body{background:transparent;color:var(--ink);font-family:'Inter',system-ui,sans-serif;
+    html,body{background:#0c0c0c;min-height:100%}
+    body{color:var(--ink);font-family:'Inter',system-ui,sans-serif;
       font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
-    #dotted-bg{position:fixed;inset:0;z-index:-1;pointer-events:none}
+    #dotted-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
 
     a{color:inherit;text-decoration:none}
     button{font-family:inherit;cursor:pointer}
     input,select,textarea{font-family:inherit}
 
     /* ── layout ── */
-    #app{max-width:1100px;margin:0 auto;padding:32px 24px 80px}
+    #app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:32px 24px 80px}
 
     /* ── header ── */
     .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
@@ -519,62 +518,49 @@
   // ── init ──
   renderTable();
 </script>
-<script type="module">
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js';
-
-  const container = document.getElementById('dotted-bg');
-  if (!container) return;
+<script>
+(function() {
+  const bg = document.getElementById('dotted-bg');
+  if (!bg) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'width:100%;height:100%';
+  bg.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
 
   const SEP = 150, AX = 40, AY = 60;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 10000);
-  camera.position.set(0, 355, 1220);
-
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setPixelRatio(devicePixelRatio);
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.setClearColor(0x000000, 0);
-  container.appendChild(renderer.domElement);
-
-  const positions = [], colors = [];
-  for (let ix = 0; ix < AX; ix++) {
-    for (let iy = 0; iy < AY; iy++) {
-      positions.push(ix * SEP - (AX * SEP) / 2, 0, iy * SEP - (AY * SEP) / 2);
-      colors.push(1, 1, 1);
-    }
-  }
-
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
-
-  const mat = new THREE.PointsMaterial({ size: 8, vertexColors: true, transparent: true, opacity: 0.8, sizeAttenuation: true });
-  scene.add(new THREE.Points(geo, mat));
-
+  const CAM_Y = 355, CAM_Z = 1220;
+  const FOV = Math.PI / 3;
   let count = 0;
-  const posAttr = geo.attributes.position;
-  const arr = posAttr.array;
+
+  function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
 
   (function animate() {
     requestAnimationFrame(animate);
-    let i = 0;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const focal = (canvas.height / 2) / Math.tan(FOV / 2);
+    const hw = canvas.width / 2, hh = canvas.height / 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+
     for (let ix = 0; ix < AX; ix++) {
       for (let iy = 0; iy < AY; iy++) {
-        arr[i * 3 + 1] = Math.sin((ix + count) * 0.3) * 50 + Math.sin((iy + count) * 0.5) * 50;
-        i++;
+        const wx = ix * SEP - (AX * SEP) / 2;
+        const wy = Math.sin((ix + count) * 0.3) * 50 + Math.sin((iy + count) * 0.5) * 50;
+        const wz = iy * SEP - (AY * SEP) / 2;
+        const vz = CAM_Z - wz;
+        if (vz <= 1) continue;
+        const sx = hw + (wx / vz) * focal;
+        const sy = hh - ((wy - CAM_Y) / vz) * focal;
+        const r = Math.max(0.3, (8 / vz) * focal);
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, 6.283);
+        ctx.fill();
       }
     }
-    posAttr.needsUpdate = true;
-    renderer.render(scene, camera);
     count += 0.1;
   })();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-  });
+})();
 </script>
 </body>
 </html>
