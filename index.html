@@ -152,6 +152,34 @@
       table{font-size:11px}
       .td-url,.td-date{display:none}
     }
+
+    /* ── email preview modal ── */
+    #preview-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;
+      display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+    #preview-bg.open{display:flex}
+    #preview-modal{background:#111;border:1px solid rgba(255,255,255,.12);border-radius:10px;
+      width:720px;max-width:96vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
+    #preview-header{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
+    #preview-to{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;letter-spacing:.04em}
+    #preview-subject-line{font-size:14px;font-weight:500;color:#fff}
+    #preview-body-wrap{flex:1;overflow-y:auto;min-height:0}
+    #preview-frame{width:100%;border:none;background:#0a0c11;display:block;height:520px}
+    #preview-footer{padding:14px 24px;border-top:1px solid rgba(255,255,255,.08);
+      display:flex;gap:10px;justify-content:flex-end;flex-shrink:0;align-items:center}
+    #preview-status{font-size:11px;color:rgba(255,255,255,.5);margin-right:auto}
+    .btn-send{padding:10px 22px;background:#21d3b8;color:#000;border:none;border-radius:6px;
+      font-size:12px;font-weight:700;letter-spacing:.04em;transition:opacity 180ms}
+    .btn-send:hover{opacity:.85}
+    .btn-send:disabled{opacity:.4;cursor:not-allowed}
+    .badge-sent{font-size:10px;color:#21d3b8;letter-spacing:.04em;padding:3px 8px;
+      border:1px solid rgba(33,211,184,.3);border-radius:100px;white-space:nowrap}
+
+    /* ── toast ── */
+    #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+      background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;
+      padding:12px 20px;font-size:12px;color:#fff;z-index:300;
+      opacity:0;pointer-events:none;transition:opacity 300ms;white-space:nowrap}
+    #toast.show{opacity:1}
   </style>
 </head>
 <body>
@@ -269,6 +297,27 @@
 
 </div>
 
+<!-- Email preview modal -->
+<div id="preview-bg">
+  <div id="preview-modal">
+    <div id="preview-header">
+      <div id="preview-to"></div>
+      <div id="preview-subject-line"></div>
+    </div>
+    <div id="preview-body-wrap">
+      <iframe id="preview-frame" sandbox="allow-same-origin"></iframe>
+    </div>
+    <div id="preview-footer">
+      <span id="preview-status"></span>
+      <button class="btn-clear" onclick="closePreviewModal()">Cancel</button>
+      <button class="btn-send" id="preview-confirm" onclick="confirmSend()">Confirm Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
 <!-- Notes modal -->
 <div id="modal-bg" onclick="closeModal(event)">
   <div id="modal">
@@ -361,18 +410,20 @@ set('r-phone',   d.phones,  'Not found');
     const lead = {
       id: Date.now().toString(),
       name:    extracted.name || '',
-phones:  extracted.phones || [],
+      phones:  extracted.phones || [],
       emails:  extracted.emails || [],
       address: extracted.address || '',
       url:     extracted.url || '',
       status:  'New',
       notes:   '',
       date:    new Date().toISOString(),
+      emailSent: false,
     };
     leads.unshift(lead);
     save();
     clearResults();
     renderTable();
+    if (lead.emails.length) triggerMockupFlow(lead);
   }
 
   function save() {
@@ -414,7 +465,10 @@ phones:  extracted.phones || [],
   }
 
   document.addEventListener('keydown', e => {
-    if(e.key === 'Escape') document.getElementById('modal-bg').classList.remove('open');
+    if(e.key === 'Escape') {
+      document.getElementById('modal-bg').classList.remove('open');
+      document.getElementById('preview-bg').classList.remove('open');
+    }
   });
 
   // ── filter / sort / render ──
@@ -497,6 +551,12 @@ phones:  extracted.phones || [],
               <button class="icon-btn" onclick="openNote('${l.id}')" title="${hasNote?'View notes':'Add notes'}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${hasNote?'style="color:#fff"':''}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
               </button>
+              ${l.emailSent
+                ? `<span class="badge-sent">📧 sent</span>`
+                : l.emails.length
+                  ? `<button class="icon-btn" onclick="openMockupFlow('${l.id}')" title="Send email mockup"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L12 13 2 7"/></svg></button>`
+                  : ''
+              }
               <button class="icon-btn danger" onclick="deleteLead('${l.id}')" title="Delete">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
               </button>
@@ -585,6 +645,100 @@ phones:  extracted.phones || [],
       document.getElementById('find-spinner').style.display = 'none';
       document.getElementById('find-label').style.display = 'block';
     }
+  }
+
+  // ── email mockup ──
+  let _previewData = null;
+
+  async function triggerMockupFlow(lead) {
+    showToast('Generating mockup…');
+    try {
+      const r = await fetch('/api/generate-mockup', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: lead.name,
+          phone: lead.phones,
+          url: lead.url,
+          address: lead.address,
+          email: lead.emails[0],
+        }),
+      });
+      const data = await r.json();
+      if (!r.ok || !data.ok) throw new Error(data.error || 'Mockup generation failed');
+      showPreviewModal(lead, data);
+    } catch(e) {
+      showToast('Mockup error: ' + e.message, 5000);
+    }
+  }
+
+  function openMockupFlow(id) {
+    const lead = leads.find(l => l.id === id);
+    if (lead && !lead.emailSent) triggerMockupFlow(lead);
+  }
+
+  function showPreviewModal(lead, data) {
+    _previewData = { lead, ...data };
+    const toEmail = lead.emails[0] || '?';
+    document.getElementById('preview-to').textContent = 'To: ' + toEmail;
+    document.getElementById('preview-subject-line').textContent = data.emailSubject || '';
+    document.getElementById('preview-status').textContent = '';
+    document.getElementById('preview-confirm').disabled = false;
+
+    const previewHtml = data.imageBase64
+      ? data.emailBodyHtml.replace('cid:mockup-preview', `data:image/png;base64,${data.imageBase64}`)
+      : data.emailBodyHtml;
+
+    const frame = document.getElementById('preview-frame');
+    frame.srcdoc = previewHtml;
+    frame.onload = () => {
+      try {
+        const h = frame.contentDocument.documentElement.scrollHeight;
+        if (h > 100) frame.style.height = Math.min(h + 20, 600) + 'px';
+      } catch {}
+    };
+
+    document.getElementById('preview-bg').classList.add('open');
+  }
+
+  async function confirmSend() {
+    if (!_previewData) return;
+    const { lead, emailSubject, emailBodyHtml, imageBase64 } = _previewData;
+    const toEmail = lead.emails[0];
+    document.getElementById('preview-confirm').disabled = true;
+    document.getElementById('preview-status').textContent = 'Sending…';
+
+    try {
+      const r = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ toEmail, subject: emailSubject, bodyHtml: emailBodyHtml, imageBase64 }),
+      });
+      const data = await r.json();
+      if (!r.ok || !data.ok) throw new Error(data.error || 'Send failed');
+
+      const l = leads.find(l => l.id === lead.id);
+      if (l) { l.emailSent = true; save(); renderTable(); }
+
+      closePreviewModal();
+      showToast('Email sent to ' + toEmail);
+    } catch(e) {
+      document.getElementById('preview-status').textContent = 'Error: ' + e.message;
+      document.getElementById('preview-confirm').disabled = false;
+    }
+  }
+
+  function closePreviewModal() {
+    document.getElementById('preview-bg').classList.remove('open');
+    _previewData = null;
+  }
+
+  function showToast(msg, duration = 2500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), duration);
   }
 
   // ── init ──

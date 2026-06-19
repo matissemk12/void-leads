@@ -1,0 +1,26 @@
+{
+  "name": "void-leads",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matissemk12/void-leads.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/matissemk12/void-leads/issues"
+  },
+  "homepage": "https://github.com/matissemk12/void-leads#readme",
+  "dependencies": {
+    "@sparticuz/chromium-min": "^149.0.0",
+    "puppeteer-core": "^25.1.0",
+    "resend": "^6.14.0"
+  }
+}
