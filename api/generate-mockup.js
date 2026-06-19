@@ -1,4 +1,4 @@
-const chromium = require('@sparticuz/chromium-min');
+const chromium = require('@sparticuz/chromium-min').default;
 const puppeteer = require('puppeteer-core');
 
 function buildMockupHtml({ businessName, phone, city, service }) {
@@ -323,7 +323,7 @@ module.exports = async function handler(req, res) {
       args: chromium.args,
       defaultViewport: { width: 1200, height: 900 },
       executablePath,
-      headless: chromium.headless,
+      headless: 'shell',
     });
 
     const page = await browser.newPage();
