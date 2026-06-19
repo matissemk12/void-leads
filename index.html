@@ -154,23 +154,42 @@
     }
 
     /* ── email preview modal ── */
-    #preview-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;
+    #preview-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;
       display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
     #preview-bg.open{display:flex}
     #preview-modal{background:#111;border:1px solid rgba(255,255,255,.12);border-radius:10px;
-      width:720px;max-width:96vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
-    #preview-header{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
-    #preview-to{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;letter-spacing:.04em}
-    #preview-subject-line{font-size:14px;font-weight:500;color:#fff}
-    #preview-body-wrap{flex:1;overflow-y:auto;min-height:0}
-    #preview-frame{width:100%;border:none;background:#0a0c11;display:block;height:520px}
-    #preview-footer{padding:14px 24px;border-top:1px solid rgba(255,255,255,.08);
-      display:flex;gap:10px;justify-content:flex-end;flex-shrink:0;align-items:center}
-    #preview-status{font-size:11px;color:rgba(255,255,255,.5);margin-right:auto}
-    .btn-send{padding:10px 22px;background:#21d3b8;color:#000;border:none;border-radius:6px;
-      font-size:12px;font-weight:700;letter-spacing:.04em;transition:opacity 180ms}
-    .btn-send:hover{opacity:.85}
-    .btn-send:disabled{opacity:.4;cursor:not-allowed}
+      width:960px;max-width:96vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
+    #preview-header{padding:18px 24px 14px;border-bottom:1px solid rgba(255,255,255,.08);
+      flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+    #preview-title{font-size:13px;font-weight:500;color:#fff}
+    #preview-lead-name{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+    #preview-body{flex:1;overflow-y:auto;min-height:0;display:grid;grid-template-columns:1fr 1fr;min-height:0}
+    #preview-left{border-right:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column}
+    #preview-left-header{padding:12px 16px;font-size:10px;letter-spacing:.08em;
+      color:rgba(255,255,255,.4);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+    #preview-frame{flex:1;border:none;background:#0a0c11;display:block;min-height:480px}
+    #preview-right{display:flex;flex-direction:column;overflow:hidden}
+    #preview-right-header{padding:12px 16px;font-size:10px;letter-spacing:.08em;
+      color:rgba(255,255,255,.4);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+    #preview-subject-wrap{padding:12px 16px 0;flex-shrink:0}
+    #preview-subject-label{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.06em;margin-bottom:4px}
+    #preview-subject-val{font-size:12px;font-weight:500;color:#fff;padding:8px 10px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:4px;
+      word-break:break-all;cursor:pointer;transition:background 150ms}
+    #preview-subject-val:hover{background:rgba(255,255,255,.09)}
+    #preview-email-text{flex:1;margin:12px 16px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:12px;
+      font-size:12px;color:#eef0f6;line-height:1.65;resize:none;outline:none;font-family:inherit;
+      min-height:240px}
+    #preview-email-text:focus{border-color:rgba(255,255,255,.2)}
+    #preview-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);
+      display:flex;gap:8px;flex-shrink:0;align-items:center;flex-wrap:wrap}
+    .btn-action{padding:8px 16px;border-radius:6px;font-size:11px;font-weight:600;
+      letter-spacing:.04em;cursor:pointer;transition:opacity 180ms;border:none}
+    .btn-action:hover{opacity:.82}
+    .btn-gmail{background:#21d3b8;color:#000}
+    .btn-dl{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15)!important}
+    .btn-copy-text{background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.12)!important}
     .badge-sent{font-size:10px;color:#21d3b8;letter-spacing:.04em;padding:3px 8px;
       border:1px solid rgba(33,211,184,.3);border-radius:100px;white-space:nowrap}
 
@@ -301,16 +320,30 @@
 <div id="preview-bg">
   <div id="preview-modal">
     <div id="preview-header">
-      <div id="preview-to"></div>
-      <div id="preview-subject-line"></div>
+      <div>
+        <div id="preview-title">Mockup Preview</div>
+        <div id="preview-lead-name"></div>
+      </div>
+      <button class="btn-clear" onclick="closePreviewModal()" style="padding:6px 14px">✕ Close</button>
     </div>
-    <div id="preview-body-wrap">
-      <iframe id="preview-frame" sandbox="allow-same-origin"></iframe>
-    </div>
-    <div id="preview-footer">
-      <span id="preview-status"></span>
-      <button class="btn-clear" onclick="closePreviewModal()">Cancel</button>
-      <button class="btn-send" id="preview-confirm" onclick="confirmSend()">Confirm Send</button>
+    <div id="preview-body">
+      <div id="preview-left">
+        <div id="preview-left-header">Redesign concept</div>
+        <iframe id="preview-frame" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+      <div id="preview-right">
+        <div id="preview-right-header">Email copy</div>
+        <div id="preview-subject-wrap">
+          <div id="preview-subject-label">SUBJECT</div>
+          <div id="preview-subject-val" onclick="copySubject()" title="Click to copy"></div>
+        </div>
+        <textarea id="preview-email-text" readonly></textarea>
+        <div id="preview-footer">
+          <button class="btn-action btn-gmail" onclick="openGmail()">Open Gmail →</button>
+          <button class="btn-action btn-copy-text" onclick="copyEmailText()">Copy text</button>
+          <button class="btn-action btn-dl" onclick="downloadMockup()">Download HTML</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -423,7 +456,6 @@ set('r-phone',   d.phones,  'Not found');
     save();
     clearResults();
     renderTable();
-    if (lead.emails.length) triggerMockupFlow(lead);
   }
 
   function save() {
@@ -651,81 +683,67 @@ set('r-phone',   d.phones,  'Not found');
   let _previewData = null;
 
   async function triggerMockupFlow(lead) {
-    showToast('Generating mockup…');
+    showToast('Building mockup…');
     try {
       const r = await fetch('/api/generate-mockup', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          name: lead.name,
-          phone: lead.phones,
-          url: lead.url,
-          address: lead.address,
-          email: lead.emails[0],
-        }),
+        body: JSON.stringify({ name: lead.name, phone: lead.phones, url: lead.url, address: lead.address }),
       });
       const data = await r.json();
-      if (!r.ok || !data.ok) throw new Error(data.error || 'Mockup generation failed');
+      if (!r.ok || !data.ok) throw new Error(data.error || 'Failed');
       showPreviewModal(lead, data);
     } catch(e) {
-      showToast('Mockup error: ' + e.message, 5000);
+      showToast('Error: ' + e.message, 5000);
     }
   }
 
   function openMockupFlow(id) {
     const lead = leads.find(l => l.id === id);
-    if (lead && !lead.emailSent) triggerMockupFlow(lead);
+    if (lead) triggerMockupFlow(lead);
   }
 
   function showPreviewModal(lead, data) {
     _previewData = { lead, ...data };
-    const toEmail = lead.emails[0] || '?';
-    document.getElementById('preview-to').textContent = 'To: ' + toEmail;
-    document.getElementById('preview-subject-line').textContent = data.emailSubject || '';
-    document.getElementById('preview-status').textContent = '';
-    document.getElementById('preview-confirm').disabled = false;
-
-    const previewHtml = data.imageBase64
-      ? data.emailBodyHtml.replace('cid:mockup-preview', `data:image/png;base64,${data.imageBase64}`)
-      : data.emailBodyHtml;
-
-    const frame = document.getElementById('preview-frame');
-    frame.srcdoc = previewHtml;
-    frame.onload = () => {
-      try {
-        const h = frame.contentDocument.documentElement.scrollHeight;
-        if (h > 100) frame.style.height = Math.min(h + 20, 600) + 'px';
-      } catch {}
-    };
-
+    const toEmail = lead.emails[0] || '';
+    document.getElementById('preview-lead-name').textContent = lead.name + (toEmail ? ' · ' + toEmail : '');
+    document.getElementById('preview-subject-val').textContent = data.emailSubject || '';
+    document.getElementById('preview-email-text').value = data.emailText || '';
+    document.getElementById('preview-frame').srcdoc = data.mockupHtml || '';
     document.getElementById('preview-bg').classList.add('open');
   }
 
-  async function confirmSend() {
+  function openGmail() {
     if (!_previewData) return;
-    const { lead, emailSubject, emailBodyHtml, imageBase64 } = _previewData;
-    const toEmail = lead.emails[0];
-    document.getElementById('preview-confirm').disabled = true;
-    document.getElementById('preview-status').textContent = 'Sending…';
+    const { lead, emailSubject, emailText } = _previewData;
+    const to = lead.emails[0] || '';
+    const url = 'https://mail.google.com/mail/u/0/?view=cm&fs=1'
+      + '&to=' + encodeURIComponent(to)
+      + '&su=' + encodeURIComponent(emailSubject || '')
+      + '&body=' + encodeURIComponent(emailText || '');
+    window.open(url, '_blank');
+    const l = leads.find(l => l.id === _previewData.lead.id);
+    if (l) { l.emailSent = true; save(); renderTable(); }
+  }
 
-    try {
-      const r = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ toEmail, subject: emailSubject, bodyHtml: emailBodyHtml, imageBase64 }),
-      });
-      const data = await r.json();
-      if (!r.ok || !data.ok) throw new Error(data.error || 'Send failed');
+  function copySubject() {
+    const val = document.getElementById('preview-subject-val').textContent;
+    navigator.clipboard.writeText(val).then(() => showToast('Subject copied'));
+  }
 
-      const l = leads.find(l => l.id === lead.id);
-      if (l) { l.emailSent = true; save(); renderTable(); }
+  function copyEmailText() {
+    const val = document.getElementById('preview-email-text').value;
+    navigator.clipboard.writeText(val).then(() => showToast('Email text copied'));
+  }
 
-      closePreviewModal();
-      showToast('Email sent to ' + toEmail);
-    } catch(e) {
-      document.getElementById('preview-status').textContent = 'Error: ' + e.message;
-      document.getElementById('preview-confirm').disabled = false;
-    }
+  function downloadMockup() {
+    if (!_previewData) return;
+    const blob = new Blob([_previewData.mockupHtml], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (_previewData.lead.name || 'mockup').replace(/\s+/g, '-').toLowerCase() + '-mockup.html';
+    a.click();
+    showToast('Mockup downloaded');
   }
 
   function closePreviewModal() {
